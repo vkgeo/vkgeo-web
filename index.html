@@ -7,7 +7,9 @@
 <meta charset="UTF-8">
 
 <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
+
 <script src="https://openlayers.org/en/v4.6.5/build/ol.js"></script>
+<script src="https://vk.com/js/api/xd_connection.js?2"></script>
 
 </head>
 
@@ -29,6 +31,14 @@
             map.getView().fit(extent);
         }
     }
+
+    VK.init(function() {
+        console.log("SUCCESS");
+    }, function() {
+        console.log("FAILURE");
+    },'5.78');
+
+    VK.callMethod("showSettingsBox", 2050);
 
     var marker_source = new ol.source.Vector({
         features: []
@@ -55,19 +65,28 @@
     if ("geolocation" in navigator) {
         navigator.geolocation.watchPosition(function(position) {
             if (my_marker === null) {
-                my_marker = new ol.Feature({
-                    geometry: new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude])),
+                VK.api("users.get", {
+                    "fields": "photo_50",
+                    "v":      "5.76"
+                }, function (data) {
+                    if (data.response.length === 1) {
+                        my_marker = new ol.Feature({
+                            geometry: new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude])),
+                        });
+
+                        my_marker.setStyle(new ol.style.Style({
+                            image: new ol.style.Icon({
+                                src: data.response[0].photo_50,
+                            })
+                        }));
+
+                        marker_source.addFeature(my_marker);
+
+                        fitMapToAllMarkers();
+                    } else {
+                        console.log("users.get : invalid response : " + data);
+                    }
                 });
-
-                my_marker.setStyle(new ol.style.Style({
-                    image: new ol.style.Icon({
-                        src: "https://openlayers.org/en/v4.6.5/examples/data/icon.png"
-                    })
-                }));
-                
-                marker_source.addFeature(my_marker);
-
-                fitMapToAllMarkers();
             } else {
                 my_marker.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude])));
             }
