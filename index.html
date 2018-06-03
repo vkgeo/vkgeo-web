@@ -32,14 +32,6 @@
         }
     }
 
-    VK.init(function() {
-        console.log("SUCCESS");
-    }, function() {
-        console.log("FAILURE");
-    },'5.78');
-
-    VK.callMethod("showSettingsBox", 2050);
-
     var marker_source = new ol.source.Vector({
         features: []
     });
@@ -62,36 +54,47 @@
 
     var my_marker = null;
 
-    if ("geolocation" in navigator) {
-        navigator.geolocation.watchPosition(function(position) {
-            if (my_marker === null) {
-                VK.api("users.get", {
-                    "fields": "photo_50",
-                    "v":      "5.76"
-                }, function (data) {
-                    if (data.response.length === 1) {
-                        my_marker = new ol.Feature({
-                            geometry: new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude])),
+    VK.init(function() {
+        VK.addCallback("onSettingsChanged", function(settings) {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.watchPosition(function(position) {
+                    if (my_marker === null) {
+                        VK.api("users.get", {
+                            "fields": "photo_50",
+                            "v":      "5.76"
+                        }, function (data) {
+                            if (data.response.length === 1) {
+                                my_marker = new ol.Feature({
+                                    geometry: new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude])),
+                                });
+
+                                my_marker.setStyle(new ol.style.Style({
+                                    image: new ol.style.Icon({
+                                        src: data.response[0].photo_50,
+                                    })
+                                }));
+
+                                marker_source.addFeature(my_marker);
+
+                                fitMapToAllMarkers();
+                            } else {
+                                console.log("users.get : invalid response : " + data);
+                            }
                         });
-
-                        my_marker.setStyle(new ol.style.Style({
-                            image: new ol.style.Icon({
-                                src: data.response[0].photo_50,
-                            })
-                        }));
-
-                        marker_source.addFeature(my_marker);
-
-                        fitMapToAllMarkers();
                     } else {
-                        console.log("users.get : invalid response : " + data);
+                        my_marker.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude])));
                     }
                 });
-            } else {
-                my_marker.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude])));
             }
         });
-    }
+        VK.addCallback("onSettingsCancel", function() {
+            console.log("CANCEL");
+        });
+
+        VK.callMethod("showSettingsBox", 2050);
+    }, function() {
+        console.log("FAILURE");
+    },'5.78');
 </script>
 
 </body>
