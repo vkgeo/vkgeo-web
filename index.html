@@ -12,7 +12,6 @@
 <script src="https://www.localeplanet.com/api/auto/icu.js"></script>
 <script src="https://www.localeplanet.com/api/translate.js"></script>
 <script src="https://vk.com/js/api/xd_connection.js?2"></script>
-<script src="qmlweb/qmlweb.js"></script>
 
 </head>
 
@@ -33,14 +32,6 @@
         let fem_div = document.getElementById("fatalErrorMessage");
 
         fem_div.style.display = "block";
-
-        let fem_qml_engine = new QmlWeb.QMLEngine(fem_div);
-
-        fem_qml_engine.loadFile("qml/FatalErrorMessage.qml");
-
-        fem_qml_engine.rootObject.errorText = error_text;
-
-        fem_qml_engine.start();
     }
 
     function fitMapToAllMarkers() {
