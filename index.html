@@ -23,8 +23,11 @@
 <div id="fatalErrorMessage" style="margin: auto; position: absolute; left: 25%; top: 35%; right: 25%; bottom: 35%; z-index: 2; display: none"></div>
 
 <script>
-    const VK_API_V        = "5.78";
-    const DATA_NOTE_TITLE = "VKGeo Data";
+    const UPDATE_INTERVAL     = 60000;
+    const VK_REQUEST_INTERVAL = 500;
+    const VK_MAX_BATCH_SIZE   = 25;
+    const VK_API_V            = "5.78";
+    const DATA_NOTE_TITLE     = "VKGeo Data";
 
     function displayFatalError(error_text) {
         let fem_div = document.getElementById("fatalErrorMessage");
@@ -54,6 +57,109 @@
         }
     }
 
+    function startPeriodicUpdates() {
+        let notes_req_count = 0;
+        let friends_list    = [];
+        let friends_map     = {};
+        let notes_list      = [];
+
+        function updateFriends(data, offset) {
+            if (data.hasOwnProperty("response")) {
+                friends_list = friends_list.concat(data.response.items);
+
+                if (offset + data.response.items.length < data.response.count) {
+                    setTimeout(function() {
+                        VK.api("friends.get", {
+                            "fields": "photo_50,photo_100",
+                            "offset": offset + data.response.items.length,
+                            "v":      VK_API_V
+                        }, function(data) {
+                            updateFriends(data, offset + data.response.items.length);
+                        });
+                    }, VK_REQUEST_INTERVAL);
+                } else {
+                    for (let i = 0; i < friends_list.length; i = i + VK_MAX_BATCH_SIZE) {
+                        let code = "var result = [];";
+
+                        for (let j = 0; j < VK_MAX_BATCH_SIZE; j++) {
+                            if (i + j < friends_list.length) {
+                                friends_map[friends_list[i + j].id.toString()] = friends_list[i + j];
+
+                                code = code + "result.push(API.notes.get({\"user_id\": " + friends_list[i + j].id + ", \"count\": 100}).items);";
+                            }
+                        }
+
+                        code = code + "return result;"
+
+                        setTimeout(function() {
+                            VK.api("execute", {
+                                "code": code,
+                                "v":    VK_API_V
+                            }, function(data) {
+                                if (data.hasOwnProperty("response")) {
+                                    for (let i = 0; i < data.response.length; i++) {
+                                        for (let j = 0; j < data.response[i].length; j++) {
+                                            if (data.response[i][j].title === DATA_NOTE_TITLE) {
+                                                notes_list.push(data.response[i][j]);
+                                            }
+                                        }
+                                    }
+                                } else {
+                                    if (data.hasOwnProperty("error")) {
+                                        console.log("execute(notes.get) : invalid response : " + data.error.error_msg);
+                                    } else {
+                                        console.log("execute(notes.get) : invalid response : " + data);
+                                    }
+                                }
+
+                                notes_req_count--;
+
+                                if (notes_req_count === 0) {
+                                    console.log(notes_list);
+
+                                    //friendsListModel.clear();
+
+                                    for (let i = 0; i < notes_list.length; i++) {
+                                        let user_id = notes_list[i].owner_id.toString();
+
+                                        if (friends_map.hasOwnProperty(user_id)) {
+                                            let frnd = {};
+
+                                            frnd.userId      = user_id;
+                                            frnd.firstName   = friends_map[user_id].first_name;
+                                            frnd.lastName    = friends_map[user_id].last_name;
+                                            frnd.photoUrl    = friends_map[user_id].photo_50;
+                                            frnd.bigPhotoUrl = friends_map[user_id].photo_100;
+
+                                            //friendsListModel.append(frnd);
+                                        }
+                                    }
+                                }
+                            });
+                        }, VK_REQUEST_INTERVAL * i / VK_MAX_BATCH_SIZE);
+
+                        notes_req_count++;
+                    }
+                }
+            } else {
+                if (data.hasOwnProperty("error")) {
+                    console.log("friends.get : invalid response : " + data.error.error_msg);
+                } else {
+                    console.log("friends.get : invalid response : " + data);
+                }
+            }
+        }
+
+        VK.api("friends.get", {
+            "fields": "photo_50,photo_100",
+            "v":      VK_API_V
+        }, function(data) {
+            updateFriends(data, 0);
+        });
+
+        setTimeout(startPeriodicUpdates, UPDATE_INTERVAL);
+    }
+
     var marker_source = new ol.source.Vector({
         features: []
     });
@@ -78,14 +184,7 @@
 
     VK.init(function() {
         VK.addCallback("onSettingsChanged", function(settings) {
-            let cp_div = document.getElementById("controlPanel");
-
-            cp_div.style.display = "block";
-
-            let cp_qml_engine = new QmlWeb.QMLEngine(cp_div);
-
-            cp_qml_engine.loadFile("qml/ControlPanel.qml");
-            cp_qml_engine.start();
+            startPeriodicUpdates();
 
             if ("geolocation" in navigator) {
                 navigator.geolocation.watchPosition(function(position) {
