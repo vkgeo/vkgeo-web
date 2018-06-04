@@ -19,15 +19,18 @@
 <body style="width: 100%; height: 100%">
 
 <div id="map" style="width: 100%; height: 100%"></div>
-<div id="fatalErrorMessage" style="margin: auto; position: absolute; left: 25%; top: 35%; right: 25%; bottom: 35%; z-index: 1; display: none"></div>
+<div id="controlPanel" style="margin: auto; position: absolute; width: 80px; top: 10%; right: 0; bottom: 10%; z-index: 1; display: none"></div>
+<div id="fatalErrorMessage" style="margin: auto; position: absolute; left: 25%; top: 35%; right: 25%; bottom: 35%; z-index: 2; display: none"></div>
 
 <script>
+    const VK_API_V  = "5.78";
+
     function displayFatalError(error_text) {
-        var fem_div = document.getElementById("fatalErrorMessage");
+        let fem_div = document.getElementById("fatalErrorMessage");
 
         fem_div.style.display = "block";
 
-        var fem_qml_engine = new QmlWeb.QMLEngine(fem_div);
+        let fem_qml_engine = new QmlWeb.QMLEngine(fem_div);
 
         fem_qml_engine.loadFile("qml/FatalErrorMessage.qml");
 
@@ -37,12 +40,12 @@
     }
 
     function fitMapToAllMarkers() {
-        var markers = marker_source.getFeatures();
+        let markers = marker_source.getFeatures();
 
         if (markers.length > 0) {
-            var extent = [0.0, 0.0, 0.0, 0.0];
+            let extent = [0.0, 0.0, 0.0, 0.0];
 
-            for (var i = 0; i < markers.length; i++) {
+            for (let i = 0; i < markers.length; i++) {
                 ol.extent.extend(extent, markers[i].getGeometry().getExtent());
             }
 
@@ -71,18 +74,26 @@
     });
 
     var my_marker = null;
-    var vk_api_v  = "5.78";
 
     VK.init(function() {
         VK.addCallback("onSettingsChanged", function(settings) {
+            let cp_div = document.getElementById("controlPanel");
+
+            cp_div.style.display = "block";
+
+            let cp_qml_engine = new QmlWeb.QMLEngine(cp_div);
+
+            cp_qml_engine.loadFile("qml/ControlPanel.qml");
+            cp_qml_engine.start();
+
             if ("geolocation" in navigator) {
                 navigator.geolocation.watchPosition(function(position) {
                     if (my_marker === null) {
                         VK.api("users.get", {
                             "fields": "photo_50",
-                            "v":      vk_api_v
+                            "v":      VK_API_V
                         }, function (data) {
-                            if (data.response.length === 1) {
+                            if (data.hasOwnProperty("response") && data.response.length === 1) {
                                 my_marker = new ol.Feature({
                                     geometry: new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude])),
                                 });
@@ -97,7 +108,11 @@
 
                                 fitMapToAllMarkers();
                             } else {
-                                console.log("users.get : invalid response : " + data);
+                                if (data.hasOwnProperty("error")) {
+                                    console.log("users.get : invalid response : " + data.error.error_msg);
+                                } else {
+                                    console.log("users.get : invalid response : " + data);
+                                }
                             }
                         });
                     } else {
@@ -113,7 +128,7 @@
         VK.callMethod("showSettingsBox", 2050);
     }, function() {
         displayFatalError(_("VK initialization failed"));
-    }, vk_api_v);
+    }, VK_API_V);
 </script>
 
 </body>
