@@ -34,6 +34,38 @@
         fem_div.style.display = "block";
     }
 
+    function createMarkerImage(src, size) {
+        return new ol.style.Icon({
+            "img": (function() {
+                let canvas = document.createElement("canvas");
+
+                canvas.width  = size[0];
+                canvas.height = size[1];
+
+                let image = document.createElement("img");
+
+                image.src    = src;
+                image.onload = function() {
+                    let radius  = Math.min(size[0], size[1]) / 2;
+                    let context = canvas.getContext("2d");
+
+                    context.save();
+
+                    context.beginPath();
+                    context.arc(size[0] / 2, size[1] / 2, radius, 0, 2 * Math.PI, false);
+                    context.clip();
+
+                    context.drawImage(image, 0, 0, size[0], size[1]);
+
+                    context.restore();
+                }
+
+                return canvas;
+            })(),
+            "imgSize": size
+        })
+    }
+
     function fitMapToAllMarkers() {
         let markers = marker_source.getFeatures();
 
@@ -62,7 +94,7 @@
                     if (offset + data.response.items.length < data.response.count) {
                         setTimeout(function() {
                             VK.api("friends.get", {
-                                "fields": "photo_50,photo_100",
+                                "fields": "photo_50",
                                 "offset": offset + data.response.items.length,
                                 "v":      VK_API_V
                             }, function(data) {
@@ -139,9 +171,7 @@
                                                         });
 
                                                         frnd_marker.setStyle(new ol.style.Style({
-                                                            "image": new ol.style.Icon({
-                                                                "src": friends_map[user_id].photo_50
-                                                            })
+                                                            "image": createMarkerImage(friends_map[user_id].photo_50, [48, 48])
                                                         }));
 
                                                         marker_source.addFeature(frnd_marker);
@@ -177,7 +207,7 @@
         }
 
         VK.api("friends.get", {
-            "fields": "photo_50,photo_100",
+            "fields": "photo_50",
             "v":      VK_API_V
         }, function(data) {
             updateFriends(data, 0);
@@ -234,9 +264,7 @@
                                     });
 
                                     my_marker.setStyle(new ol.style.Style({
-                                        "image": new ol.style.Icon({
-                                            "src": data.response[0].photo_50
-                                        })
+                                        "image": createMarkerImage(data.response[0].photo_50, [48, 48])
                                     }));
 
                                     marker_source.addFeature(my_marker);
