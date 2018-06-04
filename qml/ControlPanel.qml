@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.9
 
 Rectangle {
     id:           controlPanel
@@ -6,6 +6,28 @@ Rectangle {
     color:        "white"
     border.width: 2
     border.color: "steelblue"
+
+    ListView {
+        id:              friendsListView
+        anchors.fill:    parent
+        anchors.margins: 4
+        spacing:         1
+
+        model: ListModel {
+            id: friendsListModel
+        }
+
+        delegate: Rectangle {
+            width:  friendsListView.width
+            height: 100
+            color:  "red"
+
+            Text {
+                anchors.centerIn: parent
+                text:             lastName
+            }
+        }
+    }
 
     Timer {
         interval:         60000
@@ -16,6 +38,7 @@ Rectangle {
         property int notesReqCount: 0
 
         property var friendsList:   null
+        property var friendsMap:    null
         property var notesList:     null
 
         onTriggered: {
@@ -34,13 +57,16 @@ Rectangle {
                             });
                         }, 500);
                     } else {
-                        notesList = [];
+                        friendsMap = {};
+                        notesList  = [];
 
                         for (var i = 0; i < friendsList.length; i = i + 25) {
                             var code = "var result = [];";
 
                             for (var j = 0; j < 25; j++) {
                                 if (i + j < friendsList.length) {
+                                    friendsMap[friendsList[i + j].id.toString()] = friendsList[i + j];
+
                                     code = code + "result.push(API.notes.get({\"user_id\": " + friendsList[i + j].id + ", \"count\": 100}).items);";
                                 }
                             }
@@ -56,7 +82,9 @@ Rectangle {
                                         if (data.hasOwnProperty("response")) {
                                             for (var i = 0; i < data.response.length; i++) {
                                                 for (var j = 0; j < data.response[i].length; j++) {
-                                                    notesList = notesList.concat(data.response[i][j]);
+                                                    if (data.response[i][j].title === DATA_NOTE_TITLE) {
+                                                        notesList.push(data.response[i][j]);
+                                                    }
                                                 }
                                             }
                                         } else {
@@ -72,7 +100,26 @@ Rectangle {
                                         if (notesReqCount === 0) {
                                             console.log(notesList);
 
+                                            friendsListModel.clear();
+
+                                            for (var k = 0; k < notesList.length; k++) {
+                                                var user_id = notesList[k].owner_id.toString();
+
+                                                if (friendsMap.hasOwnProperty(user_id)) {
+                                                    var frnd = {};
+
+                                                    frnd.userId      = user_id;
+                                                    frnd.firstName   = friendsMap[user_id].first_name;
+                                                    frnd.lastName    = friendsMap[user_id].last_name;
+                                                    frnd.photoUrl    = friendsMap[user_id].photo_50;
+                                                    frnd.bigPhotoUrl = friendsMap[user_id].photo_100;
+
+                                                    friendsListModel.append(frnd);
+                                                }
+                                            }
+
                                             friendsList = null;
+                                            friendsMap  = null;
                                             notesList   = null;
                                         }
                                     });
@@ -85,6 +132,7 @@ Rectangle {
                     }
                 } else {
                     friendsList = null;
+                    friendsMap  = null;
                     notesList   = null;
 
                     if (data.hasOwnProperty("error")) {
@@ -95,7 +143,7 @@ Rectangle {
                 }
             }
 
-            if (friendsList === null && notesList === null) {
+            if (friendsList === null) {
                 friendsList = [];
 
                 VK.api("friends.get", {

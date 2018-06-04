@@ -23,7 +23,8 @@
 <div id="fatalErrorMessage" style="margin: auto; position: absolute; left: 25%; top: 35%; right: 25%; bottom: 35%; z-index: 2; display: none"></div>
 
 <script>
-    const VK_API_V  = "5.78";
+    const VK_API_V        = "5.78";
+    const DATA_NOTE_TITLE = "VKGeo Data";
 
     function displayFatalError(error_text) {
         let fem_div = document.getElementById("fatalErrorMessage");
@@ -92,7 +93,7 @@
                         VK.api("users.get", {
                             "fields": "photo_50",
                             "v":      VK_API_V
-                        }, function (data) {
+                        }, function(data) {
                             if (data.hasOwnProperty("response") && data.response.length === 1) {
                                 my_marker = new ol.Feature({
                                     geometry: new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude])),
