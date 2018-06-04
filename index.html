@@ -47,9 +47,9 @@
         let markers = marker_source.getFeatures();
 
         if (markers !== null && markers.length > 0) {
-            let extent = [0.0, 0.0, 0.0, 0.0];
+            let extent = markers[0].getGeometry().getExtent();
 
-            for (let i = 0; i < markers.length; i++) {
+            for (let i = 1; i < markers.length; i++) {
                 ol.extent.extend(extent, markers[i].getGeometry().getExtent());
             }
 
