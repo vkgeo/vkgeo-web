@@ -143,12 +143,8 @@
                                     notes_req_count--;
 
                                     if (notes_req_count === 0) {
-                                        marker_source.clear();
-
-                                        if (my_marker !== null) {
-                                            marker_source.addFeature(my_marker);
-                                        }
-
+                                        let updated_friends = {};
+                                    
                                         for (let i = 0; i < notes_list.length; i++) {
                                             let user_id = notes_list[i].owner_id.toString();
 
@@ -166,19 +162,45 @@
                                                     }
 
                                                     if (user_data !== null) {
-                                                        let frnd_marker = new ol.Feature({
-                                                            "geometry": new ol.geom.Point(ol.proj.fromLonLat([user_data.longitude, user_data.latitude]))
-                                                        });
+                                                        let frnd_marker = marker_source.getFeatureById(user_id);
 
-                                                        frnd_marker.setStyle(new ol.style.Style({
-                                                            "image": createMarkerImage(friends_map[user_id].photo_50, [48, 48])
-                                                        }));
+                                                        if (frnd_marker === null) {
+                                                            frnd_marker = new ol.Feature({
+                                                                "geometry": new ol.geom.Point(ol.proj.fromLonLat([user_data.longitude, user_data.latitude]))
+                                                            });
 
-                                                        marker_source.addFeature(frnd_marker);
+                                                            frnd_marker.setId(user_id);
+
+                                                            frnd_marker.setStyle(new ol.style.Style({
+                                                                "image": createMarkerImage(friends_map[user_id].photo_50, [48, 48])
+                                                            }));
+
+                                                            marker_source.addFeature(frnd_marker);
+                                                        } else {
+                                                            frnd_marker.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([user_data.longitude, user_data.latitude])));
+                                                        }
+                                                        
+                                                        updated_friends[user_id] = true;
                                                     }
                                                 } else {
                                                     console.log("updateFriends() : invalid user data");
                                                 }
+                                            }
+                                        }
+                                        
+                                        let markers = marker_source.getFeatures();
+                                        
+                                        if (markers !== null) {
+                                            let markers_to_remove = [];
+                                            
+                                            for (let i = 0; i < markers.length; i++) {
+                                                if (markers[i].getId() !== "" && !updated_friends.hasOwnProperty(markers[i].getId())) {
+                                                    markers_to_remove.push(markers[i]);
+                                                }
+                                            }
+                                            
+                                            for (let i = 0; i < markers_to_remove.length; i++) {
+                                                marker_source.removeFeature(markers_to_remove[i]);
                                             }
                                         }
 
@@ -193,6 +215,22 @@
                         }
                     }
                 } else {
+                    let markers = marker_source.getFeatures();
+                    
+                    if (markers !== null) {
+                        let markers_to_remove = [];
+                        
+                        for (let i = 0; i < markers.length; i++) {
+                            if (markers[i].getId() !== "") {
+                                markers_to_remove.push(markers[i]);
+                            }
+                        }
+                        
+                        for (let i = 0; i < markers_to_remove.length; i++) {
+                            marker_source.removeFeature(markers_to_remove[i]);
+                        }
+                    }
+
                     if (!map_was_touched) {
                         fitMapToAllMarkers();
                     }
@@ -262,6 +300,8 @@
                                     my_marker = new ol.Feature({
                                         "geometry": new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude]))
                                     });
+
+                                    my_marker.setId("");
 
                                     my_marker.setStyle(new ol.style.Style({
                                         "image": createMarkerImage(data.response[0].photo_50, [48, 48])
