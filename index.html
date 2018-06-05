@@ -24,6 +24,7 @@
 <script>
     const UPDATE_INTERVAL     = 60000;
     const LOCATION_TIMEOUT    = 12 * 60 * 60;
+    const VK_ACCESS_SETTINGS  = 2048 | 2;
     const VK_REQUEST_INTERVAL = 500;
     const VK_MAX_BATCH_SIZE   = 25;
     const VK_API_V            = "5.78";
@@ -331,52 +332,56 @@
 
     VK.init(function() {
         VK.addCallback("onSettingsChanged", function(settings) {
-            startPeriodicUpdates();
+            if ((settings & VK_ACCESS_SETTINGS) === VK_ACCESS_SETTINGS) {
+                startPeriodicUpdates();
 
-            if ("geolocation" in navigator) {
-                navigator.geolocation.watchPosition(function(position) {
-                    if (my_marker === null) {
-                        VK.api("users.get", {
-                            "fields": "photo_50",
-                            "v":      VK_API_V
-                        }, function(data) {
-                            if (data.hasOwnProperty("response")) {
-                                if (data.response !== null && data.response.length === 1) {
-                                    my_marker = new ol.Feature({
-                                        "geometry": new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude]))
-                                    });
+                if ("geolocation" in navigator) {
+                    navigator.geolocation.watchPosition(function(position) {
+                        if (my_marker === null) {
+                            VK.api("users.get", {
+                                "fields": "photo_50",
+                                "v":      VK_API_V
+                            }, function(data) {
+                                if (data.hasOwnProperty("response")) {
+                                    if (data.response !== null && data.response.length === 1) {
+                                        my_marker = new ol.Feature({
+                                            "geometry": new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude]))
+                                        });
 
-                                    my_marker.setId("");
+                                        my_marker.setId("");
 
-                                    my_marker.setStyle(new ol.style.Style({
-                                        "image": createMarkerImage(my_marker, (new Date()).getTime() / 1000, data.response[0].photo_50, [48, 48])
-                                    }));
+                                        my_marker.setStyle(new ol.style.Style({
+                                            "image": createMarkerImage(my_marker, (new Date()).getTime() / 1000, data.response[0].photo_50, [48, 48])
+                                        }));
 
-                                    marker_source.addFeature(my_marker);
+                                        marker_source.addFeature(my_marker);
 
-                                    if (!map_was_touched) {
-                                        fitMapToAllMarkers();
+                                        if (!map_was_touched) {
+                                            fitMapToAllMarkers();
+                                        }
+                                    }
+                                } else {
+                                    if (data.hasOwnProperty("error")) {
+                                        console.log("main() : users.get request failed : " + data.error.error_msg);
+                                    } else {
+                                        console.log("main() : users.get request failed : " + data);
                                     }
                                 }
-                            } else {
-                                if (data.hasOwnProperty("error")) {
-                                    console.log("main() : users.get request failed : " + data.error.error_msg);
-                                } else {
-                                    console.log("main() : users.get request failed : " + data);
-                                }
-                            }
-                        });
-                    } else {
-                        my_marker.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude])));
-                    }
-                });
+                            });
+                        } else {
+                            my_marker.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude])));
+                        }
+                    });
+                }
+            } else {
+                displayFatalError(_("You should allow access to friends and notes to view location of your friends on the map"));
             }
         });
         VK.addCallback("onSettingsCancel", function() {
             displayFatalError(_("You should allow access to friends and notes to view location of your friends on the map"));
         });
 
-        VK.callMethod("showSettingsBox", 2050);
+        VK.callMethod("showSettingsBox", VK_ACCESS_SETTINGS);
     }, function() {
         displayFatalError(_("VK initialization failed"));
     }, VK_API_V);
