@@ -58,12 +58,12 @@
                     context.drawImage(image, 0, 0, size[0], size[1]);
 
                     context.restore();
-                }
+                };
 
                 return canvas;
             })(),
             "imgSize": size
-        })
+        });
     }
 
     function fitMapToAllMarkers() {
@@ -144,7 +144,7 @@
 
                                     if (notes_req_count === 0) {
                                         let updated_friends = {};
-                                    
+
                                         for (let i = 0; i < notes_list.length; i++) {
                                             let user_id = notes_list[i].owner_id.toString();
 
@@ -179,7 +179,7 @@
                                                         } else {
                                                             frnd_marker.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([user_data.longitude, user_data.latitude])));
                                                         }
-                                                        
+
                                                         updated_friends[user_id] = true;
                                                     }
                                                 } else {
@@ -187,18 +187,18 @@
                                                 }
                                             }
                                         }
-                                        
+
                                         let markers = marker_source.getFeatures();
-                                        
+
                                         if (markers !== null) {
                                             let markers_to_remove = [];
-                                            
+
                                             for (let i = 0; i < markers.length; i++) {
                                                 if (markers[i].getId() !== "" && !updated_friends.hasOwnProperty(markers[i].getId())) {
                                                     markers_to_remove.push(markers[i]);
                                                 }
                                             }
-                                            
+
                                             for (let i = 0; i < markers_to_remove.length; i++) {
                                                 marker_source.removeFeature(markers_to_remove[i]);
                                             }
@@ -216,16 +216,16 @@
                     }
                 } else {
                     let markers = marker_source.getFeatures();
-                    
+
                     if (markers !== null) {
                         let markers_to_remove = [];
-                        
+
                         for (let i = 0; i < markers.length; i++) {
                             if (markers[i].getId() !== "") {
                                 markers_to_remove.push(markers[i]);
                             }
                         }
-                        
+
                         for (let i = 0; i < markers_to_remove.length; i++) {
                             marker_source.removeFeature(markers_to_remove[i]);
                         }
