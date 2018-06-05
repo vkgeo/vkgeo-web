@@ -23,6 +23,7 @@
 
 <script>
     const UPDATE_INTERVAL     = 60000;
+    const LOCATION_TIMEOUT    = 12 * 60 * 60;
     const VK_REQUEST_INTERVAL = 500;
     const VK_MAX_BATCH_SIZE   = 25;
     const VK_API_V            = "5.78";
@@ -34,31 +35,55 @@
         fem_div.style.display = "block";
     }
 
-    function createMarkerImage(src, size) {
+    function createMarkerImage(marker, update_time, src, size) {
         return new ol.style.Icon({
             "img": (function() {
+                function drawIcon() {
+                    if ((image === null || (image.complete && image.naturalWidth !== 0)) &&
+                        (label === null || (label.complete && label.naturalWidth !== 0))) {
+                        const angle   = Math.PI / 4;
+                        let   radius  = Math.min(size[0], size[1]) / 2;
+                        let   context = canvas.getContext("2d");
+
+                        context.save();
+
+                        context.beginPath();
+                        context.arc(size[0] / 2, size[1] / 2, radius, 0, 2 * Math.PI, false);
+                        context.clip();
+
+                        if (image !== null) {
+                            context.drawImage(image, 0, 0, size[0], size[1]);
+                        }
+
+                        context.restore();
+
+                        if (label !== null) {
+                            context.drawImage(label, size[0] / 2 + radius * Math.sin(angle) - label.width  / 2,
+                                                     size[1] / 2 + radius * Math.cos(angle) - label.height / 2);
+                        }
+
+                        marker.changed();
+                    }
+                }
+
                 let canvas = document.createElement("canvas");
+                let image  = null;
+                let label  = null;
 
                 canvas.width  = size[0];
                 canvas.height = size[1];
 
-                let image = document.createElement("img");
+                image = document.createElement("img");
 
                 image.src    = src;
-                image.onload = function() {
-                    let radius  = Math.min(size[0], size[1]) / 2;
-                    let context = canvas.getContext("2d");
+                image.onload = drawIcon;
 
-                    context.save();
+                if ((new Date()).getTime() / 1000 > update_time + LOCATION_TIMEOUT) {
+                    label = document.createElement("img");
 
-                    context.beginPath();
-                    context.arc(size[0] / 2, size[1] / 2, radius, 0, 2 * Math.PI, false);
-                    context.clip();
-
-                    context.drawImage(image, 0, 0, size[0], size[1]);
-
-                    context.restore();
-                };
+                    label.src    = "images/obsolete_location_label.png";
+                    label.onload = drawIcon;
+                }
 
                 return canvas;
             })(),
@@ -76,7 +101,9 @@
                 ol.extent.extend(extent, markers[i].getGeometry().getExtent());
             }
 
-            map.getView().fit(extent);
+            map.getView().fit(extent, {
+                "padding": [32, 32, 32, 32]
+            });
         }
     }
 
@@ -172,12 +199,16 @@
                                                             frnd_marker.setId(user_id);
 
                                                             frnd_marker.setStyle(new ol.style.Style({
-                                                                "image": createMarkerImage(friends_map[user_id].photo_50, [48, 48])
+                                                                "image": createMarkerImage(frnd_marker, user_data.update_time, friends_map[user_id].photo_50, [48, 48])
                                                             }));
 
                                                             marker_source.addFeature(frnd_marker);
                                                         } else {
                                                             frnd_marker.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([user_data.longitude, user_data.latitude])));
+
+                                                            frnd_marker.setStyle(new ol.style.Style({
+                                                                "image": createMarkerImage(frnd_marker, user_data.update_time, friends_map[user_id].photo_50, [48, 48])
+                                                            }));
                                                         }
 
                                                         updated_friends[user_id] = true;
@@ -304,7 +335,7 @@
                                     my_marker.setId("");
 
                                     my_marker.setStyle(new ol.style.Style({
-                                        "image": createMarkerImage(data.response[0].photo_50, [48, 48])
+                                        "image": createMarkerImage(my_marker, (new Date()).getTime() / 1000, data.response[0].photo_50, [48, 48])
                                     }));
 
                                     marker_source.addFeature(my_marker);
