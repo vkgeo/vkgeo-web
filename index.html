@@ -75,14 +75,21 @@
 
                 image = document.createElement("img");
 
-                image.src    = src;
-                image.onload = drawIcon;
+                image.crossOrigin = "anonymous";
+                image.onload      = drawIcon;
+
+                if (src.match(/camera_50\.png/)) {
+                    image.src = "images/camera_50.png";
+                } else {
+                    image.src = src;
+                }
 
                 if ((new Date()).getTime() / 1000 > update_time + LOCATION_TIMEOUT) {
                     label = document.createElement("img");
 
-                    label.src    = "images/obsolete_location_label.png";
-                    label.onload = drawIcon;
+                    label.crossOrigin = "anonymous";
+                    label.onload      = drawIcon;
+                    label.src         = "images/obsolete_location_label.png";
                 }
 
                 return canvas;
@@ -301,10 +308,17 @@
                 "source": marker_source
             })
         ],
-        "view":   new ol.View({
+        "view": new ol.View({
             "center": ol.proj.fromLonLat([0.0, 0.0]),
-            "zoom": 0
+            "zoom":   0
         })
+    });
+    map.on("singleclick", function(event) {
+        map.forEachFeatureAtPixel(event.pixel, function(feature,layer) {
+            if (feature.getId() !== null && feature.getId() !== "") {
+                window.open("https://vk.com/id" + feature.getId());
+            }
+        });
     });
     map.on("dblclick", function(event) {
         map_was_touched = true;
