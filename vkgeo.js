@@ -6,6 +6,19 @@ const VK_MAX_BATCH_SIZE   = 25;
 const VK_API_V            = "5.78";
 const DATA_NOTE_TITLE     = "VKGeo Data";
 
+function escapeHtml(string) {
+    let text = document.createTextNode(string);
+    let div  = document.createElement("div");
+
+    div.appendChild(text);
+
+    return div.innerHTML;
+}
+
+function requestSettings() {
+    VK.callMethod("showSettingsBox", VK_ACCESS_SETTINGS);
+}
+
 function createMarkerImage(marker, update_time, src, size) {
     return new ol.style.Icon({
         "img": (function() {
@@ -85,7 +98,7 @@ function fitMapToAllMarkers() {
     }
 }
 
-function startPeriodicUpdates() {
+function runPeriodicUpdate() {
     let notes_req_count = 0;
     let friends_list    = [];
     let friends_map     = {};
@@ -260,10 +273,11 @@ function startPeriodicUpdates() {
         updateFriends(data, 0);
     });
 
-    setTimeout(startPeriodicUpdates, UPDATE_INTERVAL);
+    setTimeout(runPeriodicUpdate, UPDATE_INTERVAL);
 }
 
 let map_was_touched = false;
+let my_marker       = null;
 
 let marker_source = new ol.source.Vector({
     "features": []
@@ -298,60 +312,86 @@ map.on("pointerdrag", function(event) {
     map_was_touched = true;
 });
 
-let my_marker = null;
-
 VK.init(function() {
-    VK.addCallback("onSettingsChanged", function(settings) {
-        if ((settings & VK_ACCESS_SETTINGS) === VK_ACCESS_SETTINGS) {
-            startPeriodicUpdates();
+    function init(settings) {
+        runPeriodicUpdate();
 
-            if ("geolocation" in navigator) {
-                navigator.geolocation.watchPosition(function(position) {
-                    if (my_marker === null) {
-                        VK.api("users.get", {
-                            "fields": "photo_50",
-                            "v":      VK_API_V
-                        }, function(data) {
-                            if (data.hasOwnProperty("response")) {
-                                if (data.response !== null && data.response.length === 1) {
-                                    my_marker = new ol.Feature({
-                                        "geometry": new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude]))
-                                    });
+        if ("geolocation" in navigator) {
+            navigator.geolocation.watchPosition(function(position) {
+                if (my_marker === null) {
+                    VK.api("users.get", {
+                        "fields": "photo_50",
+                        "v":      VK_API_V
+                    }, function(data) {
+                        if (data.hasOwnProperty("response")) {
+                            if (data.response !== null && data.response.length === 1) {
+                                my_marker = new ol.Feature({
+                                    "geometry": new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude]))
+                                });
 
-                                    my_marker.setId("");
+                                my_marker.setId("");
 
-                                    my_marker.setStyle(new ol.style.Style({
-                                        "image": createMarkerImage(my_marker, (new Date()).getTime() / 1000, data.response[0].photo_50, [48, 48])
-                                    }));
+                                my_marker.setStyle(new ol.style.Style({
+                                    "image": createMarkerImage(my_marker, (new Date()).getTime() / 1000, data.response[0].photo_50, [48, 48])
+                                }));
 
-                                    marker_source.addFeature(my_marker);
+                                marker_source.addFeature(my_marker);
 
-                                    if (!map_was_touched) {
-                                        fitMapToAllMarkers();
-                                    }
-                                }
-                            } else {
-                                if (data.hasOwnProperty("error")) {
-                                    console.log("main() : users.get request failed : " + data.error.error_msg);
-                                } else {
-                                    console.log("main() : users.get request failed : " + data);
+                                if (!map_was_touched) {
+                                    fitMapToAllMarkers();
                                 }
                             }
-                        });
-                    } else {
-                        my_marker.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude])));
-                    }
-                });
+                        } else {
+                            if (data.hasOwnProperty("error")) {
+                                console.log("init() : users.get request failed : " + data.error.error_msg);
+                            } else {
+                                console.log("init() : users.get request failed : " + data);
+                            }
+                        }
+                    });
+                } else {
+                    my_marker.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude])));
+                }
+            });
+        }
+
+        return true;
+    }
+
+    function showSettingsPanel() {
+        document.getElementById("settingsPanelText").innerHTML   = escapeHtml(_("You should allow access to friends and notes to view location of your friends on the map."));
+        document.getElementById("settingsPanelButton").innerHTML = escapeHtml(_("Settings"));
+
+        document.getElementById("settingsPanel").style.display = "block";
+    }
+
+    function hideSettingsPanel() {
+        document.getElementById("settingsPanel").style.display = "none";
+    }
+
+    let initialized = false;
+    let settings    = (new URL(document.location)).searchParams.get("api_settings");
+
+    VK.addCallback("onSettingsChanged", function(settings) {
+        if ((settings & VK_ACCESS_SETTINGS) === VK_ACCESS_SETTINGS) {
+            hideSettingsPanel();
+
+            if (!initialized) {
+                initialized = init();
             }
         } else {
-            displayFatalError(_("You should allow access to friends and notes to view location of your friends on the map."));
+            showSettingsPanel();
         }
     });
     VK.addCallback("onSettingsCancel", function() {
-        displayFatalError(_("You should allow access to friends and notes to view location of your friends on the map."));
+        showSettingsPanel();
     });
 
-    VK.callMethod("showSettingsBox", VK_ACCESS_SETTINGS);
+    if ((settings & VK_ACCESS_SETTINGS) === VK_ACCESS_SETTINGS) {
+        initialized = init();
+    } else {
+        requestSettings();
+    }
 }, function() {
     displayFatalError(_("VK initialization failed."));
 }, VK_API_V);
