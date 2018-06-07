@@ -21,7 +21,6 @@ body {
     display:  none;
 }
 #settingsPanel {
-    background-color: #ffffff;
     margin:           auto;
     position:         absolute;
     top:              35%;
@@ -30,6 +29,12 @@ body {
     right:            25%;
     z-index:          2;
     display:          none;
+    align-items:      center;
+    justify-content:  center;
+    flex-flow:        wrap;
+    background-color: #ffffff;
+    border-radius:    25px;
+    border:           4px solid #4682B4;
 }
 #settingsPanelText {
     margin-top:    8px;
@@ -40,16 +45,21 @@ body {
     color:         #000000;
 }
 #settingsPanelButton {
-    margin-top:  -10px;
-    margin-left: -50px;
-    position:    relative;
-    height:      20px;
-    width:       100px;
-    top:         50%;
-    left:        50%;
+    margin-top:       4px;
+    margin-bottom:    4px;
+    margin-left:      4px;
+    margin-right:     4px;
+    display:          inline-block;
+    background-color: #4682B4;
+    border-radius:    8px;
+    border:           none;
+    outline:          none;
+    color:            #ffffff;
+    text-align:       center;
+    text-decoration:  none;
+    padding:          8px;
 }
-#fatalErrorMessage {
-    background-color: #ff0000;
+#fatalErrorPanel {
     margin:           auto;
     position:         absolute;
     top:              35%;
@@ -58,4 +68,17 @@ body {
     right:            25%;
     z-index:          3;
     display:          none;
+    align-items:      center;
+    justify-content:  center;
+    background-color: #ffffff;
+    border-radius:    25px;
+    border:           4px solid #4682B4;
+}
+#fatalErrorPanelText {
+    margin-top:    8px;
+    margin-bottom: 8px;
+    margin-left:   8px;
+    margin-right:  8px;
+    text-align:    center;
+    color:         #000000;
 }

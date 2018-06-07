@@ -20,15 +20,24 @@
             <p id="settingsPanelText"></p>
             <button id="settingsPanelButton" onClick="requestSettings()"></button>
         </div>
-        <div id="fatalErrorMessage"></div>
+        <div id="fatalErrorPanel">
+            <p id="fatalErrorPanelText"></p>
+        </div>
 
         <script>
+            function escapeHtml(string) {
+                var text = document.createTextNode(string);
+                var div  = document.createElement("div");
+
+                div.appendChild(text);
+
+                return div.innerHTML;
+            }
+
             function displayFatalError(error_text) {
-                var fem_div = document.getElementById("fatalErrorMessage");
+                document.getElementById("fatalErrorPanelText").innerHTML = escapeHtml(error_text);
 
-                fem_div.style.display = "block";
-
-                console.log(error_text);
+                document.getElementById("fatalErrorPanel").style.display = "flex";
             }
 
             try {

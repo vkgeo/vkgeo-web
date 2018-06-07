@@ -6,15 +6,6 @@ const VK_MAX_BATCH_SIZE   = 25;
 const VK_API_V            = "5.78";
 const DATA_NOTE_TITLE     = "VKGeo Data";
 
-function escapeHtml(string) {
-    let text = document.createTextNode(string);
-    let div  = document.createElement("div");
-
-    div.appendChild(text);
-
-    return div.innerHTML;
-}
-
 function requestSettings() {
     VK.callMethod("showSettingsBox", VK_ACCESS_SETTINGS);
 }
@@ -362,7 +353,7 @@ VK.init(function() {
         document.getElementById("settingsPanelText").innerHTML   = escapeHtml(_("You should allow access to friends and notes to view location of your friends on the map."));
         document.getElementById("settingsPanelButton").innerHTML = escapeHtml(_("Settings"));
 
-        document.getElementById("settingsPanel").style.display = "block";
+        document.getElementById("settingsPanel").style.display = "flex";
     }
 
     function hideSettingsPanel() {
