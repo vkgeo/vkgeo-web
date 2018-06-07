@@ -1,10 +1,11 @@
-const UPDATE_INTERVAL     = 60000;
-const LOCATION_TIMEOUT    = 12 * 60 * 60;
-const VK_ACCESS_SETTINGS  = 2048 | 2;
-const VK_REQUEST_INTERVAL = 500;
-const VK_MAX_BATCH_SIZE   = 25;
-const VK_API_V            = "5.78";
-const DATA_NOTE_TITLE     = "VKGeo Data";
+const UPDATE_INTERVAL        = 60000;
+const LOCATION_TIMEOUT       = 12 * 60 * 60;
+const VK_ACCESS_SETTINGS     = 2048 | 2;
+const VK_REQUEST_INTERVAL    = 500;
+const VK_MAX_BATCH_SIZE      = 25;
+const VK_MAX_NOTES_GET_COUNT = 100;
+const VK_API_V               = "5.78";
+const DATA_NOTE_TITLE        = "VKGeo Data";
 
 function requestSettings() {
     VK.callMethod("showSettingsBox", VK_ACCESS_SETTINGS);
@@ -118,7 +119,7 @@ function runPeriodicUpdate() {
                             if (i + j < friends_list.length) {
                                 friends_map[friends_list[i + j].id.toString()] = friends_list[i + j];
 
-                                code = code + "result.push(API.notes.get({\"user_id\": " + friends_list[i + j].id + ", \"count\": 100}).items);";
+                                code = code + "result.push(API.notes.get({\"user_id\": " + friends_list[i + j].id + ", \"count\": " + VK_MAX_NOTES_GET_COUNT + "}).items);";
                             }
                         }
 
