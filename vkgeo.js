@@ -151,6 +151,8 @@ function runPeriodicUpdate() {
     let friends_list = [];
 
     function updateControlPanel(friends_map) {
+        let friends_on_map = 0;
+
         let control_panel = document.getElementById("controlPanel");
 
         while (control_panel.lastChild) {
@@ -159,9 +161,7 @@ function runPeriodicUpdate() {
 
         let markers = marker_source.getFeatures();
 
-        if (markers && Object.keys(friends_map).length > 0) {
-            control_panel.style.display = "flex";
-
+        if (markers) {
             control_panel.appendChild(createControlPanelImage("SHOW_ALL", "", "images/button_show_all.png", [48, 48]));
 
             for (let i = 0; i < markers.length; i++) {
@@ -192,8 +192,14 @@ function runPeriodicUpdate() {
                     });
                 } else if (friends_map.hasOwnProperty(user_id)) {
                     control_panel.appendChild(createControlPanelImage("SHOW_MARKER", user_id, friends_map[user_id].photo_50, [48, 48]));
+
+                    friends_on_map++;
                 }
             }
+        }
+
+        if (friends_on_map > 0) {
+            control_panel.style.display = "flex";
         } else {
             control_panel.style.display = "none";
         }
@@ -442,6 +448,15 @@ VK.init(function() {
 
                                 if (!map_was_touched) {
                                     fitMapToAllMarkers();
+                                }
+
+                                let control_panel = document.getElementById("controlPanel");
+                                let my_image      = createControlPanelImage("SHOW_MARKER", "", data.response[0].photo_50, [48, 48]);
+
+                                if (control_panel.firstChild && control_panel.firstChild.nextSibling) {
+                                    control_panel.insertBefore(my_image, control_panel.firstChild.nextSibling);
+                                } else {
+                                    control_panel.appendChild(my_image);
                                 }
                             }
                         } else {
