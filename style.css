@@ -126,6 +126,7 @@ body {
 }
 #fatalErrorPanelText {
     margin:        8px 8px 8px 8px;
+    flex-basis:    90%;
     text-align:    center;
     color:         black;
     font-size:     14pt;
