@@ -11,6 +11,63 @@ function requestSettings() {
     VK.callMethod("showSettingsBox", VK_ACCESS_SETTINGS);
 }
 
+function createControlPanelImage(img_class, user_id, src, size) {
+    function drawIcon() {
+        if (image.complete && image.naturalWidth > 0) {
+            let radius  = Math.min(size[0], size[1]) / 2;
+            let context = canvas.getContext("2d");
+
+            context.save();
+
+            context.beginPath();
+            context.arc(size[0] / 2, size[1] / 2, radius, 0, 2 * Math.PI, false);
+            context.clip();
+
+            context.drawImage(image, 0, 0, size[0], size[1]);
+
+            context.restore();
+        }
+    }
+
+    let canvas = document.createElement("canvas");
+    let image  = null;
+
+    canvas.width     = size[0];
+    canvas.height    = size[1];
+    canvas.className = "controlPanelImage";
+
+    if (img_class === "SHOW_MARKER") {
+        canvas.onclick = function() {
+            let marker = marker_source.getFeatureById(user_id);
+
+            if (marker) {
+                map.getView().setCenter(marker.getGeometry().getCoordinates());
+                map.getView().setRotation(0.0);
+                map.getView().setZoom(16.0);
+
+                map_was_touched = true;
+            }
+        }
+    } else if (img_class === "SHOW_ALL") {
+        canvas.onclick = function() {
+            fitMapToAllMarkers();
+        }
+    }
+
+    image = document.createElement("img");
+
+    image.crossOrigin = "anonymous";
+    image.onload      = drawIcon;
+
+    if (src.match(/camera_50\.png/)) {
+        image.src = "images/camera_50.png";
+    } else {
+        image.src = src;
+    }
+
+    return canvas;
+}
+
 function createMarkerImage(marker, update_time, src, size) {
     return new ol.style.Icon({
         "img": (function() {
@@ -85,16 +142,62 @@ function fitMapToAllMarkers() {
         }
 
         map.getView().fit(extent, {
-            "padding": [32, 32, 32, 32]
+            "padding": [32, 96, 32, 32]
         });
     }
 }
 
 function runPeriodicUpdate() {
-    let notes_req_count = 0;
-    let friends_list    = [];
-    let friends_map     = {};
-    let notes_list      = [];
+    let friends_list = [];
+
+    function updateControlPanel(friends_map) {
+        let control_panel = document.getElementById("controlPanel");
+
+        while (control_panel.lastChild) {
+            control_panel.removeChild(control_panel.lastChild);
+        }
+
+        let markers = marker_source.getFeatures();
+
+        if (markers && Object.keys(friends_map).length > 0) {
+            control_panel.style.display = "flex";
+
+            control_panel.appendChild(createControlPanelImage("SHOW_ALL", "", "images/button_show_all.png", [48, 48]));
+
+            for (let i = 0; i < markers.length; i++) {
+                let user_id = markers[i].getId();
+
+                if (user_id === "") {
+                    VK.api("users.get", {
+                        "fields": "photo_50",
+                        "v":      VK_API_V
+                    }, function(data) {
+                        if (data.hasOwnProperty("response")) {
+                            if (data.response && data.response.length === 1) {
+                                let my_image = createControlPanelImage("SHOW_MARKER", "", data.response[0].photo_50, [48, 48]);
+
+                                if (control_panel.firstChild && control_panel.firstChild.nextSibling) {
+                                    control_panel.insertBefore(my_image, control_panel.firstChild.nextSibling);
+                                } else {
+                                    control_panel.appendChild(my_image);
+                                }
+                            }
+                        } else {
+                            if (data.hasOwnProperty("error")) {
+                                console.log("updateControlPanel() : users.get request failed : " + data.error.error_msg);
+                            } else {
+                                console.log("updateControlPanel() : users.get request failed : " + data);
+                            }
+                        }
+                    });
+                } else if (friends_map.hasOwnProperty(user_id)) {
+                    control_panel.appendChild(createControlPanelImage("SHOW_MARKER", user_id, friends_map[user_id].photo_50, [48, 48]));
+                }
+            }
+        } else {
+            control_panel.style.display = "none";
+        }
+    }
 
     function updateFriends(data, offset) {
         if (data.hasOwnProperty("response")) {
@@ -112,6 +215,10 @@ function runPeriodicUpdate() {
                         });
                     }, VK_REQUEST_INTERVAL);
                 } else {
+                    let notes_req_count = 0;
+                    let friends_map     = {};
+                    let notes_list      = [];
+
                     for (let i = 0; i < friends_list.length; i = i + VK_MAX_BATCH_SIZE) {
                         let code = "var result = [];";
 
@@ -221,6 +328,8 @@ function runPeriodicUpdate() {
                                     if (!map_was_touched) {
                                         fitMapToAllMarkers();
                                     }
+
+                                    updateControlPanel(friends_map);
                                 }
                             });
                         }, VK_REQUEST_INTERVAL * i / VK_MAX_BATCH_SIZE);
@@ -248,6 +357,8 @@ function runPeriodicUpdate() {
                 if (!map_was_touched) {
                     fitMapToAllMarkers();
                 }
+
+                updateControlPanel({});
             }
         } else {
             if (data.hasOwnProperty("error")) {
