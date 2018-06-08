@@ -30,7 +30,7 @@ body {
 .controlPanelImage {
     margin: 8px 0px 8px 0px;
 }
-#downloadPanel {
+#invitationPanel {
     margin:           auto;
     position:         absolute;
     top:              25%;
@@ -47,13 +47,13 @@ body {
     border:           2px solid steelblue;
     overflow:         auto;
 }
-#downloadPanelText {
+#invitationPanelText {
     margin:        8px 8px 8px 8px;
     text-align:    center;
     color:         black;
     font-size:     14pt;
 }
-#downloadPanelGetIosButton {
+#invitationPanelGetIosButton {
     margin:           8px 8px 8px 8px;
     background-color: steelblue;
     border-radius:    8px;
@@ -65,7 +65,7 @@ body {
     box-shadow:       0 3px gray;
     padding:          8px;
 }
-#downloadPanelGetIosButton:active {
+#invitationPanelGetIosButton:active {
     box-shadow: 0 3px darkgray;
     transform:  translateY(2px);
 }

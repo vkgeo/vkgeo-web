@@ -152,15 +152,15 @@ function fitMapToAllMarkers() {
 function runPeriodicUpdate() {
     let friends_list = [];
 
-    function showDownloadPanel() {
-        document.getElementById("downloadPanelText").innerHTML         = escapeHtml(_("This app is a web companion for VKGeo Friends on Map mobile application. Please install it on your mobile device and invite friends to it so you can see each other on the map."));
-        document.getElementById("downloadPanelGetIosButton").innerHTML = escapeHtml(_("Get VKGeo from Apple App Store"));
+    function showInvitationPanel() {
+        document.getElementById("invitationPanelText").innerHTML         = escapeHtml(_("This app is a web companion for VKGeo Friends on Map mobile application. Please install it on your mobile device and invite friends to it so you can see each other on the map."));
+        document.getElementById("invitationPanelGetIosButton").innerHTML = escapeHtml(_("Get VKGeo from Apple App Store"));
 
-        document.getElementById("downloadPanel").style.display = "flex";
+        document.getElementById("invitationPanel").style.display = "flex";
     }
 
-    function hideDownloadPanel() {
-        document.getElementById("downloadPanel").style.display = "none";
+    function hideInvitationPanel() {
+        document.getElementById("invitationPanel").style.display = "none";
     }
 
     function updateControlPanel(friends_map) {
@@ -353,9 +353,9 @@ function runPeriodicUpdate() {
                                     }
 
                                     if (updateControlPanel(friends_map)) {
-                                        hideDownloadPanel();
+                                        hideInvitationPanel();
                                     } else {
-                                        showDownloadPanel();
+                                        showInvitationPanel();
                                     }
                                 }
                             });
@@ -386,9 +386,9 @@ function runPeriodicUpdate() {
                 }
 
                 if (updateControlPanel(friends_map)) {
-                    hideDownloadPanel();
+                    hideInvitationPanel();
                 } else {
-                    showDownloadPanel();
+                    showInvitationPanel();
                 }
             }
         } else {
