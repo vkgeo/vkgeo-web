@@ -23,18 +23,18 @@ body {
     justify-content:  flex-start;
     flex-flow:        column;
     background-color: white;
+    border-radius:    8px;
     border:           2px solid steelblue;
     overflow:         auto;
 }
 .controlPanelImage {
-    margin-top:    8px;
-    margin-bottom: 8px;
+    margin: 8px 0px 8px 0px;
 }
-#settingsPanel {
+#downloadPanel {
     margin:           auto;
     position:         absolute;
-    top:              35%;
-    bottom:           35%;
+    top:              25%;
+    bottom:           25%;
     left:             20%;
     right:            20%;
     z-index:          2;
@@ -43,24 +43,57 @@ body {
     justify-content:  center;
     flex-flow:        column;
     background-color: white;
-    border-radius:    25px;
+    border-radius:    16px;
+    border:           2px solid steelblue;
+    overflow:         auto;
+}
+#downloadPanelText {
+    margin:        8px 8px 8px 8px;
+    text-align:    center;
+    color:         black;
+    font-size:     14pt;
+}
+#downloadPanelGetIosButton {
+    margin:           8px 8px 8px 8px;
+    background-color: steelblue;
+    border-radius:    8px;
+    border:           none;
+    outline:          none;
+    color:            white;
+    text-align:       center;
+    text-decoration:  none;
+    box-shadow:       0 3px gray;
+    padding:          8px;
+}
+#downloadPanelGetIosButton:active {
+    box-shadow: 0 3px darkgray;
+    transform:  translateY(2px);
+}
+#settingsPanel {
+    margin:           auto;
+    position:         absolute;
+    top:              35%;
+    bottom:           35%;
+    left:             20%;
+    right:            20%;
+    z-index:          3;
+    display:          none;
+    align-items:      center;
+    justify-content:  center;
+    flex-flow:        column;
+    background-color: white;
+    border-radius:    16px;
     border:           2px solid steelblue;
     overflow:         auto;
 }
 #settingsPanelText {
-    margin-top:    8px;
-    margin-bottom: 8px;
-    margin-left:   8px;
-    margin-right:  8px;
+    margin:        8px 8px 8px 8px;
     text-align:    center;
     color:         black;
     font-size:     14pt;
 }
 #settingsPanelButton {
-    margin-top:       4px;
-    margin-bottom:    4px;
-    margin-left:      4px;
-    margin-right:     4px;
+    margin:           8px 8px 8px 8px;
     background-color: steelblue;
     border-radius:    8px;
     border:           none;
@@ -82,20 +115,17 @@ body {
     bottom:           35%;
     left:             20%;
     right:            20%;
-    z-index:          3;
+    z-index:          4;
     display:          none;
     align-items:      center;
     justify-content:  center;
     background-color: white;
-    border-radius:    25px;
+    border-radius:    16px;
     border:           2px solid steelblue;
     overflow:         auto;
 }
 #fatalErrorPanelText {
-    margin-top:    8px;
-    margin-bottom: 8px;
-    margin-left:   8px;
-    margin-right:  8px;
+    margin:        8px 8px 8px 8px;
     text-align:    center;
     color:         black;
     font-size:     14pt;

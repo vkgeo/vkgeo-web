@@ -32,9 +32,11 @@ function createControlPanelImage(img_class, user_id, src, size) {
     let canvas = document.createElement("canvas");
     let image  = null;
 
-    canvas.width     = size[0];
-    canvas.height    = size[1];
-    canvas.className = "controlPanelImage";
+    canvas.width           = size[0];
+    canvas.height          = size[1];
+    canvas.className       = "controlPanelImage";
+    canvas.style.minWidth  = size[0] + "px";
+    canvas.style.minHeight = size[1] + "px";
 
     if (img_class === "SHOW_MARKER") {
         canvas.onclick = function() {
@@ -47,11 +49,11 @@ function createControlPanelImage(img_class, user_id, src, size) {
 
                 map_was_touched = true;
             }
-        }
+        };
     } else if (img_class === "SHOW_ALL") {
         canvas.onclick = function() {
             fitMapToAllMarkers();
-        }
+        };
     }
 
     image = document.createElement("img");
@@ -150,6 +152,17 @@ function fitMapToAllMarkers() {
 function runPeriodicUpdate() {
     let friends_list = [];
 
+    function showDownloadPanel() {
+        document.getElementById("downloadPanelText").innerHTML         = escapeHtml(_("This app is a web companion for VKGeo Friends on Map mobile application. Please install it on your mobile device and invite friends to it so you can see each other on the map."));
+        document.getElementById("downloadPanelGetIosButton").innerHTML = escapeHtml(_("Get VKGeo from Apple App Store"));
+
+        document.getElementById("downloadPanel").style.display = "flex";
+    }
+
+    function hideDownloadPanel() {
+        document.getElementById("downloadPanel").style.display = "none";
+    }
+
     function updateControlPanel(friends_map) {
         let friends_on_map = 0;
 
@@ -200,8 +213,12 @@ function runPeriodicUpdate() {
 
         if (friends_on_map > 0) {
             control_panel.style.display = "flex";
+
+            return true;
         } else {
             control_panel.style.display = "none";
+
+            return false;
         }
     }
 
@@ -335,7 +352,11 @@ function runPeriodicUpdate() {
                                         fitMapToAllMarkers();
                                     }
 
-                                    updateControlPanel(friends_map);
+                                    if (updateControlPanel(friends_map)) {
+                                        hideDownloadPanel();
+                                    } else {
+                                        showDownloadPanel();
+                                    }
                                 }
                             });
                         }, VK_REQUEST_INTERVAL * i / VK_MAX_BATCH_SIZE);
@@ -364,7 +385,11 @@ function runPeriodicUpdate() {
                     fitMapToAllMarkers();
                 }
 
-                updateControlPanel({});
+                if (updateControlPanel(friends_map)) {
+                    hideDownloadPanel();
+                } else {
+                    showDownloadPanel();
+                }
             }
         } else {
             if (data.hasOwnProperty("error")) {
