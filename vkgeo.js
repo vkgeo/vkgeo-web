@@ -15,8 +15,8 @@ function createMarkerImage(marker, update_time, src, size) {
     return new ol.style.Icon({
         "img": (function() {
             function drawIcon() {
-                if ((image === null || (image.complete && image.naturalWidth !== 0)) &&
-                    (label === null || (label.complete && label.naturalWidth !== 0))) {
+                if ((image === null || (image.complete && image.naturalWidth > 0)) &&
+                    (label === null || (label.complete && label.naturalWidth > 0))) {
                     const angle   = Math.PI / 4;
                     let   radius  = Math.min(size[0], size[1]) / 2;
                     let   context = canvas.getContext("2d");
@@ -27,13 +27,13 @@ function createMarkerImage(marker, update_time, src, size) {
                     context.arc(size[0] / 2, size[1] / 2, radius, 0, 2 * Math.PI, false);
                     context.clip();
 
-                    if (image !== null) {
+                    if (image) {
                         context.drawImage(image, 0, 0, size[0], size[1]);
                     }
 
                     context.restore();
 
-                    if (label !== null) {
+                    if (label) {
                         context.drawImage(label, size[0] / 2 + radius * Math.sin(angle) - label.width  / 2,
                                                  size[1] / 2 + radius * Math.cos(angle) - label.height / 2);
                     }
@@ -77,7 +77,7 @@ function createMarkerImage(marker, update_time, src, size) {
 function fitMapToAllMarkers() {
     let markers = marker_source.getFeatures();
 
-    if (markers !== null && markers.length > 0) {
+    if (markers && markers.length > 0) {
         let extent = markers[0].getGeometry().getExtent();
 
         for (let i = 1; i < markers.length; i++) {
@@ -98,7 +98,7 @@ function runPeriodicUpdate() {
 
     function updateFriends(data, offset) {
         if (data.hasOwnProperty("response")) {
-            if (data.response !== null && data.response.items !== null) {
+            if (data.response && data.response.items && data.response.items.length > 0) {
                 friends_list = friends_list.concat(data.response.items);
 
                 if (offset + data.response.items.length < data.response.count) {
@@ -131,9 +131,9 @@ function runPeriodicUpdate() {
                                 "v":    VK_API_V
                             }, function(data) {
                                 if (data.hasOwnProperty("response")) {
-                                    if (data.response !== null) {
+                                    if (data.response) {
                                         for (let i = 0; i < data.response.length; i++) {
-                                            if (data.response[i] !== null) {
+                                            if (data.response[i]) {
                                                 for (let j = 0; j < data.response[i].length; j++) {
                                                     if (data.response[i][j].title === DATA_NOTE_TITLE) {
                                                         notes_list.push(data.response[i][j]);
@@ -162,7 +162,7 @@ function runPeriodicUpdate() {
                                             let base64_regexp = /\{\{\{([^\}]+)\}\}\}/;
                                             let regexp_result = base64_regexp.exec(notes_list[i].text);
 
-                                            if (regexp_result !== null && regexp_result.length === 2) {
+                                            if (regexp_result && regexp_result.length === 2) {
                                                 let user_data = null;
 
                                                 try {
@@ -171,7 +171,7 @@ function runPeriodicUpdate() {
                                                     console.log("updateFriends() : invalid user data");
                                                 }
 
-                                                if (user_data !== null) {
+                                                if (user_data) {
                                                     let frnd_marker = marker_source.getFeatureById(user_id);
 
                                                     if (frnd_marker === null) {
@@ -204,7 +204,7 @@ function runPeriodicUpdate() {
 
                                     let markers = marker_source.getFeatures();
 
-                                    if (markers !== null) {
+                                    if (markers) {
                                         let markers_to_remove = [];
 
                                         for (let i = 0; i < markers.length; i++) {
@@ -231,7 +231,7 @@ function runPeriodicUpdate() {
             } else {
                 let markers = marker_source.getFeatures();
 
-                if (markers !== null) {
+                if (markers) {
                     let markers_to_remove = [];
 
                     for (let i = 0; i < markers.length; i++) {
@@ -292,7 +292,7 @@ let map = new ol.Map({
 });
 map.on("singleclick", function(event) {
     map.forEachFeatureAtPixel(event.pixel, function(feature, layer) {
-        if (feature.getId() !== null && feature.getId() !== "") {
+        if (feature.getId()) {
             window.open("https://vk.com/id" + feature.getId());
         }
     });
@@ -316,7 +316,7 @@ VK.init(function() {
                         "v":      VK_API_V
                     }, function(data) {
                         if (data.hasOwnProperty("response")) {
-                            if (data.response !== null && data.response.length === 1) {
+                            if (data.response && data.response.length === 1) {
                                 my_marker = new ol.Feature({
                                     "geometry": new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude]))
                                 });
