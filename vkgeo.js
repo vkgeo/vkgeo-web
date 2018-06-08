@@ -153,7 +153,7 @@ function runPeriodicUpdate() {
     let friends_list = [];
 
     function showInvitationPanel() {
-        document.getElementById("invitationPanelText").innerHTML         = escapeHtml(_("This app is a web companion for VKGeo Friends on Map mobile application. Please install it on your mobile device and invite friends to it so you can see each other on the map."));
+        document.getElementById("invitationPanelText").innerHTML         = escapeHtml(_("This app is a web companion for VKGeo Friends on Map mobile application. Install VKGeo on your mobile device and invite friends to it so you can see each other on the map."));
         document.getElementById("invitationPanelGetIosButton").innerHTML = escapeHtml(_("Get VKGeo from Apple App Store"));
 
         document.getElementById("invitationPanel").style.display = "flex";
