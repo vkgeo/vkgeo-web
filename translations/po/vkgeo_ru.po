@@ -1,43 +1,44 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Russian translations for PACKAGE package.
+# Copyright (C) 2018 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Automatically generated, 2018.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-06-09 11:40+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2018-06-09 12:45+0300\n"
+"PO-Revision-Date: 2018-06-09 12:45+0300\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=ASCII\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: index.html:75
+#: ../index.html:88
 msgid "Please update your browser to start using this app."
 msgstr ""
 
-#: vkgeo.js:502
+#: ../vkgeo.js:502
 msgid "Settings"
 msgstr ""
 
-#: vkgeo.js:157
+#: ../vkgeo.js:157
 msgid ""
 "This app is a web companion for VKGeo Friends on Map mobile application. <a "
 "href=\"https://vkgeo.sourceforge.io\" target=\"_blank\">Install VKGeo on "
 "your mobile device</a> and invite friends to it so you can see each other on "
 "the map."
-msgstr "Тест"
+msgstr ""
 
-#: vkgeo.js:535
+#: ../vkgeo.js:535
 msgid "VK initialization failed."
 msgstr ""
 
-#: vkgeo.js:501
+#: ../vkgeo.js:501
 msgid ""
 "You should allow access to friends and notes to view location of your "
 "friends on the map."
