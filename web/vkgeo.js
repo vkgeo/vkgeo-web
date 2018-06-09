@@ -307,18 +307,18 @@ function runPeriodicUpdate() {
 
                                                         frnd_marker.setId(user_id);
 
-                                                        frnd_marker.setStyle(new ol.style.Style({
-                                                            "image": createMarkerImage(frnd_marker, user_data.update_time, friends_map[user_id].photo_50, [48, 48])
-                                                        }));
-
                                                         marker_source.addFeature(frnd_marker);
                                                     } else {
                                                         frnd_marker.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([user_data.longitude, user_data.latitude])));
-
-                                                        frnd_marker.setStyle(new ol.style.Style({
-                                                            "image": createMarkerImage(frnd_marker, user_data.update_time, friends_map[user_id].photo_50, [48, 48])
-                                                        }));
                                                     }
+
+                                                    frnd_marker.setStyle(new ol.style.Style({
+                                                        "image": createMarkerImage(frnd_marker, user_data.update_time, friends_map[user_id].photo_50, [48, 48])
+                                                    }));
+
+                                                    frnd_marker.set("firstName",  friends_map[user_id].first_name);
+                                                    frnd_marker.set("lastName",   friends_map[user_id].last_name);
+                                                    frnd_marker.set("updateTime", user_data.update_time);
 
                                                     updated_friends[user_id] = true;
                                                 }
@@ -423,6 +423,14 @@ let map = new ol.Map({
             "source": marker_source
         })
     ],
+    "overlays": [
+        new ol.Overlay({
+            "id":          "markerTooltip",
+            "element":     document.getElementById("markerTooltip"),
+            "offset":      [8, 0],
+            "positioning": "bottom-left"
+        })
+    ],
     "view": new ol.View({
         "center": ol.proj.fromLonLat([0.0, 0.0]),
         "zoom":   0
@@ -434,6 +442,24 @@ map.on("singleclick", function(event) {
             window.open("https://vk.com/id" + feature.getId());
         }
     });
+});
+map.on("pointermove", function(event) {
+    let feature = map.forEachFeatureAtPixel(event.pixel, function(feature, layer) {
+        return feature;
+    });
+
+    if (feature) {
+        map.getOverlayById("markerTooltip").setPosition(event.coordinate);
+
+        document.getElementById("markerTooltipNameText").innerHTML       = escapeHtml(_("{0} {1}", feature.get("firstName"),
+                                                                                                   feature.get("lastName")));
+        document.getElementById("markerTooltipUpdateTimeText").innerHTML = escapeHtml(_("{0}",     (new Date(feature.get("updateTime") * 1000))
+                                                                                                        .toLocaleString()));
+
+        document.getElementById("markerTooltip").style.display = "flex";
+    } else {
+        document.getElementById("markerTooltip").style.display = "none";
+    }
 });
 map.on("dblclick", function(event) {
     map_was_touched = true;
@@ -469,6 +495,10 @@ VK.init(function() {
 
                                 marker_source.addFeature(my_marker);
 
+                                my_marker.set("firstName",  data.response[0].first_name);
+                                my_marker.set("lastName",   data.response[0].last_name);
+                                my_marker.set("updateTime", (new Date()).getTime() / 1000);
+
                                 if (!map_was_touched) {
                                     fitMapToAllMarkers();
                                 }
@@ -492,6 +522,8 @@ VK.init(function() {
                     });
                 } else {
                     my_marker.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude])));
+
+                    my_marker.set("updateTime", (new Date()).getTime() / 1000);
                 }
             });
         }
