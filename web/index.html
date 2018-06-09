@@ -60,7 +60,21 @@
                 document.getElementById("fatalErrorPanel").style.display = "flex";
             }
 
-            try {
+            function loadMainScript() {
+                try {
+                    eval("const c = 1; let v = (x) => x + c; let l = (new URL(document.location)).searchParams.get(\"language\");");
+
+                    var app_script = document.createElement("script");
+
+                    app_script.src = "vkgeo.js";
+
+                    document.getElementsByTagName("head")[0].appendChild(app_script);
+                } catch (err) {
+                    displayFatalError(_("Please update your browser to start using this app."));
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", function() {
                 var language = getUrlParameter("language");
 
                 if (language !== null) {
@@ -68,25 +82,17 @@
                     var lng_script = document.createElement("script");
 
                     if (lng_value < 3) {
-                        lng_script.src = "translations/vkgeo_ru.js";
+                        lng_script.src    = "translations/vkgeo_ru.js";
+                        lng_script.onload = loadMainScript;
 
                         document.getElementsByTagName("head")[0].appendChild(lng_script);
+                    } else {
+                        loadMainScript();
                     }
+                } else {
+                    loadMainScript();
                 }
-
-                eval("const c = 1; let v = (x) => x + c; let l = (new URL(document.location)).searchParams.get(\"language\");");
-
-                document.addEventListener("DOMContentLoaded", function() {
-                    var app_script = document.createElement("script");
-
-                    app_script.src   = "vkgeo.js";
-                    app_script.async = true;
-
-                    document.getElementsByTagName("head")[0].appendChild(app_script);
-                });
-            } catch (err) {
-                displayFatalError(_("Please update your browser to start using this app."));
-            }
+            });
         </script>
     </body>
 </html>
