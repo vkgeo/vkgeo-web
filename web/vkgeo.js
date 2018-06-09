@@ -444,6 +444,8 @@ map.on("pointerdrag", function(event) {
 
 VK.init(function() {
     function init(settings) {
+        document.getElementById("controlPanel").style.display = "flex";
+
         runPeriodicUpdate();
 
         if ("geolocation" in navigator) {
