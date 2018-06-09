@@ -144,7 +144,8 @@ function fitMapToAllMarkers() {
         }
 
         map.getView().fit(extent, {
-            "padding": [32, 96, 32, 32]
+            "padding": [32, 96, 32, 32],
+            "maxZoom": 16.0
         });
     }
 }
@@ -153,8 +154,7 @@ function runPeriodicUpdate() {
     let friends_list = [];
 
     function showInvitationPanel() {
-        document.getElementById("invitationPanelText").innerHTML         = escapeHtml(_("This app is a web companion for VKGeo Friends on Map mobile application. Install VKGeo on your mobile device and invite friends to it so you can see each other on the map."));
-        document.getElementById("invitationPanelGetIosButton").innerHTML = escapeHtml(_("Get VKGeo from Apple App Store"));
+        document.getElementById("invitationPanelText").innerHTML = _("This app is a web companion for VKGeo Friends on Map mobile application. <a href=\"https://vkgeo.sourceforge.io\" target=\"_blank\">Install VKGeo on your mobile device</a> and invite friends to it so you can see each other on the map.");
 
         document.getElementById("invitationPanel").style.display = "flex";
     }
@@ -172,11 +172,11 @@ function runPeriodicUpdate() {
             control_panel.removeChild(control_panel.lastChild);
         }
 
+        control_panel.appendChild(createControlPanelImage("SHOW_ALL", "", "images/button_show_all.png", [48, 48]));
+
         let markers = marker_source.getFeatures();
 
         if (markers) {
-            control_panel.appendChild(createControlPanelImage("SHOW_ALL", "", "images/button_show_all.png", [48, 48]));
-
             for (let i = 0; i < markers.length; i++) {
                 let user_id = markers[i].getId();
 
@@ -212,12 +212,8 @@ function runPeriodicUpdate() {
         }
 
         if (friends_on_map > 0) {
-            control_panel.style.display = "flex";
-
             return true;
         } else {
-            control_panel.style.display = "none";
-
             return false;
         }
     }

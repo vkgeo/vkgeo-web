@@ -18,7 +18,7 @@ body {
     bottom:           10%;
     right:            0;
     z-index:          1;
-    display:          none;
+    display:          flex;
     align-items:      center;
     justify-content:  flex-start;
     flex-flow:        column;
@@ -33,15 +33,14 @@ body {
 #invitationPanel {
     margin:           auto;
     position:         absolute;
-    top:              25%;
-    bottom:           25%;
-    left:             20%;
-    right:            20%;
+    height:           auto;
+    top:              0;
+    left:             15%;
+    right:            15%;
     z-index:          2;
     display:          none;
     align-items:      center;
     justify-content:  center;
-    flex-flow:        column;
     background-color: white;
     border-radius:    16px;
     border:           2px solid steelblue;
@@ -51,23 +50,7 @@ body {
     margin:        8px 8px 8px 8px;
     text-align:    center;
     color:         black;
-    font-size:     14pt;
-}
-#invitationPanelGetIosButton {
-    margin:           8px 8px 8px 8px;
-    background-color: steelblue;
-    border-radius:    8px;
-    border:           none;
-    outline:          none;
-    color:            white;
-    text-align:       center;
-    text-decoration:  none;
-    box-shadow:       0 3px gray;
-    padding:          8px;
-}
-#invitationPanelGetIosButton:active {
-    box-shadow: 0 3px darkgray;
-    transform:  translateY(2px);
+    font-size:     10pt;
 }
 #settingsPanel {
     margin:           auto;
