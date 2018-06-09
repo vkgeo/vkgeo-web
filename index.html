@@ -38,6 +38,23 @@
                 return div.innerHTML;
             }
 
+            function getUrlParameter(name) {
+                name = name.replace(/[\[\]]/g, "\\$&");
+
+                var regex   = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
+                var results = regex.exec(window.location.href);
+
+                if (results) {
+                    if (results[2]) {
+                        return decodeURIComponent(results[2].replace(/\+/g, " "));
+                    } else {
+                        return "";
+                    }
+                } else {
+                    return null;
+                }
+            }
+
             function displayFatalError(error_text) {
                 document.getElementById("fatalErrorPanelText").innerHTML = escapeHtml(error_text);
 
@@ -45,7 +62,7 @@
             }
 
             try {
-                eval("const c = 1; let v = (x) => x + c;");
+                eval("const c = 1; let v = (x) => x + c; let l = (new URL(document.location)).searchParams.get(\"language\");");
 
                 document.addEventListener("DOMContentLoaded", function() {
                     var script = document.createElement("script");
