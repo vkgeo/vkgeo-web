@@ -1,4 +1,4 @@
- const UPDATE_INTERVAL        = 60000;
+const UPDATE_INTERVAL        = 60000;
 const LOCATION_TIMEOUT       = 12 * 60 * 60;
 const VK_ACCESS_SETTINGS     = 2048 | 2;
 const VK_REQUEST_INTERVAL    = 500;
