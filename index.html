@@ -61,15 +61,28 @@
             }
 
             try {
+                var language = getUrlParameter("language");
+
+                if (language !== null) {
+                    var lng_value  = parseInt(language, 10);
+                    var lng_script = document.createElement("script");
+
+                    if (lng_value < 3) {
+                        lng_script.src = "translations/vkgeo_ru.js";
+
+                        document.getElementsByTagName("head")[0].appendChild(lng_script);
+                    }
+                }
+
                 eval("const c = 1; let v = (x) => x + c; let l = (new URL(document.location)).searchParams.get(\"language\");");
 
                 document.addEventListener("DOMContentLoaded", function() {
-                    var script = document.createElement("script");
+                    var app_script = document.createElement("script");
 
-                    script.src   = "vkgeo.js";
-                    script.async = true;
+                    app_script.src   = "vkgeo.js";
+                    app_script.async = true;
 
-                    document.getElementsByTagName("head")[0].appendChild(script);
+                    document.getElementsByTagName("head")[0].appendChild(app_script);
                 });
             } catch (err) {
                 displayFatalError(_("Please update your browser to start using this app."));
