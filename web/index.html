@@ -64,7 +64,7 @@
                 document.getElementById("fatalErrorPanel").style.display = "flex";
             }
 
-            function loadMainScript() {
+            function loadAppScript() {
                 try {
                     eval("const c = 1; let v = (x) => x + c; let l = (new URL(document.location)).searchParams.get(\"language\");");
 
@@ -87,14 +87,14 @@
 
                     if (lng_value < 3) {
                         lng_script.src    = "translations/vkgeo_ru.js";
-                        lng_script.onload = loadMainScript;
+                        lng_script.onload = loadAppScript;
 
                         document.getElementsByTagName("head")[0].appendChild(lng_script);
                     } else {
-                        loadMainScript();
+                        loadAppScript();
                     }
                 } else {
-                    loadMainScript();
+                    loadAppScript();
                 }
             });
         </script>
