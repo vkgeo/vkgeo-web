@@ -147,8 +147,12 @@ function fitMapToAllMarkers() {
             ol.extent.extend(extent, markers[i].getGeometry().getExtent());
         }
 
+        let ad_panel_height     = 0;
         let control_panel_width = 0;
 
+        if (document.getElementById("adPanel").offsetHeight) {
+            ad_panel_height = document.getElementById("adPanel").offsetHeight;
+        }
         if (document.getElementById("controlPanel").offsetWidth) {
             control_panel_width = document.getElementById("controlPanel").offsetWidth;
         }
@@ -156,7 +160,7 @@ function fitMapToAllMarkers() {
         map.getView().fit(extent, {
             "padding": [MARKER_IMAGE_SIZE,
                         MARKER_IMAGE_SIZE + control_panel_width,
-                        MARKER_IMAGE_SIZE,
+                        MARKER_IMAGE_SIZE + ad_panel_height,
                         MARKER_IMAGE_SIZE],
             "maxZoom": MAP_CENTER_ZOOM
         });
@@ -483,7 +487,16 @@ map.on("pointerdrag", function(event) {
 
 VK.init(function() {
     function init(settings) {
+        document.getElementById("adPanel").style.display      = "flex";
         document.getElementById("controlPanel").style.display = "flex";
+
+        VK.Widgets.Ads("adPanel", {}, {
+            "demo":           "ads", // !!! REMOVE TO SHOW REAL ADS
+            "ad_unit_id":     105075,
+            "ad_unit_hash":   "498223b8d2f6d0f460567d0b69f52cfc",
+            "ad_unit_width":  260,
+            "ad_unit_height": 125
+        });
 
         runPeriodicUpdate();
 
