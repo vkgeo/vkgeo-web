@@ -85,7 +85,19 @@
                     var lng_value  = parseInt(language, 10);
                     var lng_script = document.createElement("script");
 
-                    if (lng_value < 3) {
+                    if (
+                        lng_value === 0   || // Russian
+                        lng_value === 1   || // Ukrainian
+                        lng_value === 2   || // Belarusian (Tarashkevitsa)
+                        lng_value === 114 || // Belarusian
+                        lng_value === 57  || // Azerbaijani
+                        lng_value === 62  || // Turkmen
+                        lng_value === 65  || // Uzbek
+                        lng_value === 66  || // Moldavanian
+                        lng_value === 70  || // Tajik
+                        lng_value === 87  || // Kirgiz
+                        lng_value === 97     // Kazakh
+                    ) {
                         lng_script.src    = "translations/vkgeo_ru.js";
                         lng_script.onload = loadAppScript;
 
