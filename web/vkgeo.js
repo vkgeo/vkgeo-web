@@ -1,11 +1,15 @@
-const UPDATE_INTERVAL        = 60000;
-const LOCATION_TIMEOUT       = 12 * 60 * 60;
-const VK_ACCESS_SETTINGS     = 2048 | 2;
-const VK_REQUEST_INTERVAL    = 500;
-const VK_MAX_BATCH_SIZE      = 25;
-const VK_MAX_NOTES_GET_COUNT = 100;
-const VK_API_V               = "5.78";
-const DATA_NOTE_TITLE        = "VKGeo Data";
+const UPDATE_INTERVAL          = 60000;
+const LOCATION_TIMEOUT         = 12 * 60 * 60;
+const MARKER_IMAGE_SIZE        = 48;
+const CONTROL_PANEL_IMAGE_SIZE = 48;
+const MAP_CENTER_ROTATION      = 0.0;
+const MAP_CENTER_ZOOM          = 16.0;
+const VK_ACCESS_SETTINGS       = 2048 | 2;
+const VK_REQUEST_INTERVAL      = 500;
+const VK_MAX_BATCH_SIZE        = 25;
+const VK_MAX_NOTES_GET_COUNT   = 100;
+const VK_API_V                 = "5.78";
+const DATA_NOTE_TITLE          = "VKGeo Data";
 
 function requestSettings() {
     VK.callMethod("showSettingsBox", VK_ACCESS_SETTINGS);
@@ -44,8 +48,8 @@ function createControlPanelImage(img_class, user_id, src, size) {
 
             if (marker) {
                 map.getView().setCenter(marker.getGeometry().getCoordinates());
-                map.getView().setRotation(0.0);
-                map.getView().setZoom(16.0);
+                map.getView().setRotation(MAP_CENTER_ROTATION);
+                map.getView().setZoom(MAP_CENTER_ZOOM);
 
                 map_was_touched = true;
             }
@@ -144,8 +148,9 @@ function fitMapToAllMarkers() {
         }
 
         map.getView().fit(extent, {
-            "padding": [32, 96, 32, 32],
-            "maxZoom": 16.0
+            "padding": [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE + document.getElementById("controlPanel").offsetWidth,
+                        MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE],
+            "maxZoom": MAP_CENTER_ZOOM
         });
     }
 }
@@ -172,7 +177,7 @@ function runPeriodicUpdate() {
             control_panel.removeChild(control_panel.lastChild);
         }
 
-        control_panel.appendChild(createControlPanelImage("SHOW_ALL", "", "images/button_show_all.png", [48, 48]));
+        control_panel.appendChild(createControlPanelImage("SHOW_ALL", "", "images/button_show_all.png", [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]));
 
         let markers = marker_source.getFeatures();
 
@@ -187,7 +192,7 @@ function runPeriodicUpdate() {
                     }, function(data) {
                         if (data.hasOwnProperty("response")) {
                             if (data.response && data.response.length === 1) {
-                                let my_image = createControlPanelImage("SHOW_MARKER", "", data.response[0].photo_50, [48, 48]);
+                                let my_image = createControlPanelImage("SHOW_MARKER", "", data.response[0].photo_50, [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]);
 
                                 if (control_panel.firstChild && control_panel.firstChild.nextSibling) {
                                     control_panel.insertBefore(my_image, control_panel.firstChild.nextSibling);
@@ -204,7 +209,7 @@ function runPeriodicUpdate() {
                         }
                     });
                 } else if (friends_map.hasOwnProperty(user_id)) {
-                    control_panel.appendChild(createControlPanelImage("SHOW_MARKER", user_id, friends_map[user_id].photo_50, [48, 48]));
+                    control_panel.appendChild(createControlPanelImage("SHOW_MARKER", user_id, friends_map[user_id].photo_50, [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]));
 
                     friends_on_map++;
                 }
@@ -313,7 +318,7 @@ function runPeriodicUpdate() {
                                                     }
 
                                                     frnd_marker.setStyle(new ol.style.Style({
-                                                        "image": createMarkerImage(frnd_marker, user_data.update_time, friends_map[user_id].photo_50, [48, 48])
+                                                        "image": createMarkerImage(frnd_marker, user_data.update_time, friends_map[user_id].photo_50, [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE])
                                                     }));
 
                                                     frnd_marker.set("firstName",  friends_map[user_id].first_name);
@@ -490,7 +495,7 @@ VK.init(function() {
                                 my_marker.setId("");
 
                                 my_marker.setStyle(new ol.style.Style({
-                                    "image": createMarkerImage(my_marker, (new Date()).getTime() / 1000, data.response[0].photo_50, [48, 48])
+                                    "image": createMarkerImage(my_marker, (new Date()).getTime() / 1000, data.response[0].photo_50, [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE])
                                 }));
 
                                 marker_source.addFeature(my_marker);
@@ -504,7 +509,7 @@ VK.init(function() {
                                 }
 
                                 let control_panel = document.getElementById("controlPanel");
-                                let my_image      = createControlPanelImage("SHOW_MARKER", "", data.response[0].photo_50, [48, 48]);
+                                let my_image      = createControlPanelImage("SHOW_MARKER", "", data.response[0].photo_50, [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]);
 
                                 if (control_panel.firstChild && control_panel.firstChild.nextSibling) {
                                     control_panel.insertBefore(my_image, control_panel.firstChild.nextSibling);
