@@ -154,8 +154,10 @@ function fitMapToAllMarkers() {
         }
 
         map.getView().fit(extent, {
-            "padding": [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE + control_panel_width,
-                        MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE],
+            "padding": [MARKER_IMAGE_SIZE,
+                        MARKER_IMAGE_SIZE + control_panel_width,
+                        MARKER_IMAGE_SIZE,
+                        MARKER_IMAGE_SIZE],
             "maxZoom": MAP_CENTER_ZOOM
         });
     }
