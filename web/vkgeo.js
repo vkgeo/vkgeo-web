@@ -490,14 +490,13 @@ VK.init(function() {
         document.getElementById("adPanel").style.display      = "flex";
         document.getElementById("controlPanel").style.display = "flex";
 
-        setTimeout(function() {
-            let ad_params = {
-                "ad_unit_id":   105075,
-                "ad_unit_hash": "498223b8d2f6d0f460567d0b69f52cfc"
-            };
-
-            VK.Widgets.Ads("adPanel", {}, ad_params);
-        }, 0);
+        VK.Widgets.Ads("adPanel", {}, {
+            "demo":           "ads", // !!! REMOVE TO SHOW REAL ADS
+            "ad_unit_id":     105075,
+            "ad_unit_hash":   "498223b8d2f6d0f460567d0b69f52cfc",
+            "ad_unit_width":  260,
+            "ad_unit_height": 125
+        });
 
         runPeriodicUpdate();
 
