@@ -491,7 +491,6 @@ VK.init(function() {
         document.getElementById("controlPanel").style.display = "flex";
 
         VK.Widgets.Ads("adPanel", {}, {
-            "demo":           "ads", // !!! REMOVE TO SHOW REAL ADS
             "ad_unit_id":     105075,
             "ad_unit_hash":   "498223b8d2f6d0f460567d0b69f52cfc",
             "ad_unit_width":  260,
