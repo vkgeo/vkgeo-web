@@ -147,8 +147,14 @@ function fitMapToAllMarkers() {
             ol.extent.extend(extent, markers[i].getGeometry().getExtent());
         }
 
+        let control_panel_width = 0;
+
+        if (document.getElementById("controlPanel").offsetWidth) {
+            control_panel_width = document.getElementById("controlPanel").offsetWidth;
+        }
+
         map.getView().fit(extent, {
-            "padding": [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE + document.getElementById("controlPanel").offsetWidth,
+            "padding": [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE + control_panel_width,
                         MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE],
             "maxZoom": MAP_CENTER_ZOOM
         });
