@@ -506,42 +506,44 @@ VK.init(function() {
                         "fields": "photo_50",
                         "v":      VK_API_V
                     }, function(data) {
-                        if (data.hasOwnProperty("response")) {
-                            if (data.response && data.response.length === 1) {
-                                my_marker = new ol.Feature({
-                                    "geometry": new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude]))
-                                });
+                        if (my_marker === null) {
+                            if (data.hasOwnProperty("response")) {
+                                if (data.response && data.response.length === 1) {
+                                    my_marker = new ol.Feature({
+                                        "geometry": new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude]))
+                                    });
 
-                                my_marker.setId("");
+                                    my_marker.setId("");
 
-                                my_marker.setStyle(new ol.style.Style({
-                                    "image": createMarkerImage(my_marker, (new Date()).getTime() / 1000, data.response[0].photo_50, [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE])
-                                }));
+                                    my_marker.setStyle(new ol.style.Style({
+                                        "image": createMarkerImage(my_marker, (new Date()).getTime() / 1000, data.response[0].photo_50, [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE])
+                                    }));
 
-                                marker_source.addFeature(my_marker);
+                                    marker_source.addFeature(my_marker);
 
-                                my_marker.set("firstName",  data.response[0].first_name);
-                                my_marker.set("lastName",   data.response[0].last_name);
-                                my_marker.set("updateTime", (new Date()).getTime() / 1000);
+                                    my_marker.set("firstName",  data.response[0].first_name);
+                                    my_marker.set("lastName",   data.response[0].last_name);
+                                    my_marker.set("updateTime", (new Date()).getTime() / 1000);
 
-                                if (!map_was_touched) {
-                                    fitMapToAllMarkers();
+                                    if (!map_was_touched) {
+                                        fitMapToAllMarkers();
+                                    }
+
+                                    let control_panel = document.getElementById("controlPanel");
+                                    let my_image      = createControlPanelImage("SHOW_MARKER", "", data.response[0].photo_50, [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]);
+
+                                    if (control_panel.firstChild && control_panel.firstChild.nextSibling) {
+                                        control_panel.insertBefore(my_image, control_panel.firstChild.nextSibling);
+                                    } else {
+                                        control_panel.appendChild(my_image);
+                                    }
                                 }
-
-                                let control_panel = document.getElementById("controlPanel");
-                                let my_image      = createControlPanelImage("SHOW_MARKER", "", data.response[0].photo_50, [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]);
-
-                                if (control_panel.firstChild && control_panel.firstChild.nextSibling) {
-                                    control_panel.insertBefore(my_image, control_panel.firstChild.nextSibling);
-                                } else {
-                                    control_panel.appendChild(my_image);
-                                }
-                            }
-                        } else {
-                            if (data.hasOwnProperty("error")) {
-                                console.log("init() : users.get request failed : " + data.error.error_msg);
                             } else {
-                                console.log("init() : users.get request failed : " + data);
+                                if (data.hasOwnProperty("error")) {
+                                    console.log("init() : users.get request failed : " + data.error.error_msg);
+                                } else {
+                                    console.log("init() : users.get request failed : " + data);
+                                }
                             }
                         }
                     });
