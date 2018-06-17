@@ -47,15 +47,17 @@ function createControlPanelImage(img_class, user_id, src, size) {
             let marker = marker_source.getFeatureById(user_id);
 
             if (marker) {
-                map.getView().setCenter(marker.getGeometry().getCoordinates());
-                map.getView().setRotation(MAP_CENTER_ROTATION);
-                map.getView().setZoom(MAP_CENTER_ZOOM);
-
                 map_was_touched = true;
+                tracked_marker  = marker;
+
+                centerOnTrackedMarker();
             }
         };
     } else if (img_class === "SHOW_ALL") {
         canvas.onclick = function() {
+            map_was_touched = true;
+            tracked_marker  = null;
+
             fitMapToAllMarkers();
         };
     }
@@ -135,6 +137,14 @@ function createMarkerImage(marker, update_time, src, size) {
         })(),
         "imgSize": size
     });
+}
+
+function centerOnTrackedMarker() {
+    if (tracked_marker) {
+        map.getView().setCenter(tracked_marker.getGeometry().getCoordinates());
+        map.getView().setRotation(MAP_CENTER_ROTATION);
+        map.getView().setZoom(MAP_CENTER_ZOOM);
+    }
 }
 
 function fitMapToAllMarkers() {
@@ -357,11 +367,17 @@ function runPeriodicUpdate() {
                                         }
 
                                         for (let i = 0; i < markers_to_remove.length; i++) {
+                                            if (tracked_marker === markers_to_remove[i]) {
+                                                tracked_marker = null;
+                                            }
+
                                             marker_source.removeFeature(markers_to_remove[i]);
                                         }
                                     }
 
-                                    if (!map_was_touched) {
+                                    if (tracked_marker !== null) {
+                                        centerOnTrackedMarker();
+                                    } else if (!map_was_touched) {
                                         fitMapToAllMarkers();
                                     }
 
@@ -390,11 +406,17 @@ function runPeriodicUpdate() {
                     }
 
                     for (let i = 0; i < markers_to_remove.length; i++) {
+                        if (tracked_marker === markers_to_remove[i]) {
+                            tracked_marker = null;
+                        }
+
                         marker_source.removeFeature(markers_to_remove[i]);
                     }
                 }
 
-                if (!map_was_touched) {
+                if (tracked_marker !== null) {
+                    centerOnTrackedMarker();
+                } else if (!map_was_touched) {
                     fitMapToAllMarkers();
                 }
 
@@ -425,6 +447,7 @@ function runPeriodicUpdate() {
 
 let map_was_touched = false;
 let my_marker       = null;
+let tracked_marker  = null;
 
 let marker_source = new ol.source.Vector({
     "features": []
@@ -480,9 +503,11 @@ map.on("pointermove", function(event) {
 });
 map.on("dblclick", function(event) {
     map_was_touched = true;
+    tracked_marker  = null;
 });
 map.on("pointerdrag", function(event) {
     map_was_touched = true;
+    tracked_marker  = null;
 });
 
 VK.init(function() {
@@ -525,7 +550,9 @@ VK.init(function() {
                                     my_marker.set("lastName",   data.response[0].last_name);
                                     my_marker.set("updateTime", (new Date()).getTime() / 1000);
 
-                                    if (!map_was_touched) {
+                                    if (tracked_marker !== null) {
+                                        centerOnTrackedMarker();
+                                    } else if (!map_was_touched) {
                                         fitMapToAllMarkers();
                                     }
 
@@ -551,6 +578,12 @@ VK.init(function() {
                     my_marker.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude])));
 
                     my_marker.set("updateTime", (new Date()).getTime() / 1000);
+
+                    if (tracked_marker !== null) {
+                        centerOnTrackedMarker();
+                    } else if (!map_was_touched) {
+                        fitMapToAllMarkers();
+                    }
                 }
             });
         }
