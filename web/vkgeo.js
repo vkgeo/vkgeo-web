@@ -420,7 +420,7 @@ function runPeriodicUpdate() {
                     fitMapToAllMarkers();
                 }
 
-                if (updateControlPanel(friends_map)) {
+                if (updateControlPanel({})) {
                     hideInvitationPanel();
                 } else {
                     showInvitationPanel();
