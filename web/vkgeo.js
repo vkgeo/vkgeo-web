@@ -276,7 +276,7 @@ function runPeriodicUpdate() {
                             }
                         }
 
-                        code = code + "return result;"
+                        code = code + "return result;";
 
                         setTimeout(function() {
                             VK.api("execute", {
