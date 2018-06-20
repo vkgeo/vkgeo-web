@@ -457,7 +457,9 @@ let map = new ol.Map({
     "target": "map",
     "layers": [
         new ol.layer.Tile({
-            "source": new ol.source.OSM()
+            "source": new ol.source.OSM({
+                "url": "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}@2x.png"
+            })
         }),
         new ol.layer.Vector({
             "source": marker_source
