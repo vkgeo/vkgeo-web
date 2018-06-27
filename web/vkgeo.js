@@ -208,28 +208,13 @@ function runPeriodicUpdate() {
                 let user_id = markers[i].getId();
 
                 if (user_id === "") {
-                    VK.api("users.get", {
-                        "fields": "photo_50",
-                        "v":      VK_API_V
-                    }, function(data) {
-                        if (data.hasOwnProperty("response")) {
-                            if (data.response && data.response.length === 1) {
-                                let my_image = createControlPanelImage("SHOW_MARKER", "", data.response[0].photo_50, [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]);
+                    let my_image = createControlPanelImage("SHOW_MARKER", "", my_photo_50, [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]);
 
-                                if (control_panel.firstChild && control_panel.firstChild.nextSibling) {
-                                    control_panel.insertBefore(my_image, control_panel.firstChild.nextSibling);
-                                } else {
-                                    control_panel.appendChild(my_image);
-                                }
-                            }
-                        } else {
-                            if (data.hasOwnProperty("error")) {
-                                console.log("updateControlPanel() : users.get request failed : " + data.error.error_msg);
-                            } else {
-                                console.log("updateControlPanel() : users.get request failed : " + data);
-                            }
-                        }
-                    });
+                    if (control_panel.firstChild && control_panel.firstChild.nextSibling) {
+                        control_panel.insertBefore(my_image, control_panel.firstChild.nextSibling);
+                    } else {
+                        control_panel.appendChild(my_image);
+                    }
                 } else if (friends_map.hasOwnProperty(user_id)) {
                     control_panel.appendChild(createControlPanelImage("SHOW_MARKER", user_id, friends_map[user_id].photo_50, [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]));
 
@@ -386,6 +371,8 @@ function runPeriodicUpdate() {
                                     } else {
                                         showInvitationPanel();
                                     }
+
+                                    setTimeout(runPeriodicUpdate, UPDATE_INTERVAL);
                                 }
                             });
                         }, VK_REQUEST_INTERVAL * i / VK_MAX_BATCH_SIZE);
@@ -425,6 +412,8 @@ function runPeriodicUpdate() {
                 } else {
                     showInvitationPanel();
                 }
+
+                setTimeout(runPeriodicUpdate, UPDATE_INTERVAL);
             }
         } else {
             if (data.hasOwnProperty("error")) {
@@ -432,6 +421,8 @@ function runPeriodicUpdate() {
             } else {
                 console.log("updateFriends() : friends.get request failed : " + data);
             }
+
+            setTimeout(runPeriodicUpdate, UPDATE_INTERVAL);
         }
     }
 
@@ -441,11 +432,10 @@ function runPeriodicUpdate() {
     }, function(data) {
         updateFriends(data, 0);
     });
-
-    setTimeout(runPeriodicUpdate, UPDATE_INTERVAL);
 }
 
 let map_was_touched = false;
+let my_photo_50     = "images/camera_50.png";
 let my_marker       = null;
 let tracked_marker  = null;
 
@@ -536,6 +526,8 @@ VK.init(function() {
                         if (my_marker === null) {
                             if (data.hasOwnProperty("response")) {
                                 if (data.response && data.response.length === 1) {
+                                    my_photo_50 = data.response[0].photo_50;
+
                                     my_marker = new ol.Feature({
                                         "geometry": new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude]))
                                     });
@@ -543,7 +535,7 @@ VK.init(function() {
                                     my_marker.setId("");
 
                                     my_marker.setStyle(new ol.style.Style({
-                                        "image": createMarkerImage(my_marker, (new Date()).getTime() / 1000, data.response[0].photo_50, [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE])
+                                        "image": createMarkerImage(my_marker, (new Date()).getTime() / 1000, my_photo_50, [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE])
                                     }));
 
                                     marker_source.addFeature(my_marker);
@@ -559,7 +551,7 @@ VK.init(function() {
                                     }
 
                                     let control_panel = document.getElementById("controlPanel");
-                                    let my_image      = createControlPanelImage("SHOW_MARKER", "", data.response[0].photo_50, [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]);
+                                    let my_image      = createControlPanelImage("SHOW_MARKER", "", my_photo_50, [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]);
 
                                     if (control_panel.firstChild && control_panel.firstChild.nextSibling) {
                                         control_panel.insertBefore(my_image, control_panel.firstChild.nextSibling);
