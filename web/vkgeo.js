@@ -304,13 +304,15 @@ function runPeriodicUpdate() {
 
                         for (let j = 0; j < VK_MAX_BATCH_SIZE; j++) {
                             if (i + j < friends_list.length) {
-                                friends_map[friends_list[i + j].id.toString()] = friends_list[i + j];
+                                let user_id = friends_list[i + j].id.toString();
 
-                                friends_map[friends_list[i + j].id.toString()].update_time    = 0;
-                                friends_map[friends_list[i + j].id.toString()].latitude       = 0;
-                                friends_map[friends_list[i + j].id.toString()].longitude      = 0;
-                                friends_map[friends_list[i + j].id.toString()].battery_status = "";
-                                friends_map[friends_list[i + j].id.toString()].battery_level  = 0;
+                                friends_map[user_id] = friends_list[i + j];
+
+                                friends_map[user_id].update_time    = 0;
+                                friends_map[user_id].latitude       = 0;
+                                friends_map[user_id].longitude      = 0;
+                                friends_map[user_id].battery_status = "";
+                                friends_map[user_id].battery_level  = 0;
 
                                 code = code + "result.push(API.notes.get({\"user_id\": " + friends_list[i + j].id + ", \"count\": " + VK_MAX_NOTES_GET_COUNT + ", \"sort\": 0}).items);";
                             }
