@@ -1,5 +1,5 @@
 const UPDATE_INTERVAL          = 60000;
-const LOCATION_TIMEOUT         = 12 * 60 * 60;
+const DATA_TIMEOUT             = 12 * 60 * 60;
 const MARKER_IMAGE_SIZE        = 48;
 const CONTROL_PANEL_IMAGE_SIZE = 64;
 const MAP_CENTER_ROTATION      = 0.0;
@@ -86,7 +86,7 @@ function createControlPanelImage(img_class, user_id, update_time, battery_status
     }
 
     if (user_id !== "") {
-        if ((new Date()).getTime() / 1000 > update_time + LOCATION_TIMEOUT) {
+        if ((new Date()).getTime() / 1000 > update_time + DATA_TIMEOUT) {
             label = document.createElement("img");
 
             label.crossOrigin = "anonymous";
@@ -180,7 +180,7 @@ function createMarkerImage(marker, update_time, src, size) {
                 image.src = src;
             }
 
-            if ((new Date()).getTime() / 1000 > update_time + LOCATION_TIMEOUT) {
+            if ((new Date()).getTime() / 1000 > update_time + DATA_TIMEOUT) {
                 label = document.createElement("img");
 
                 label.crossOrigin = "anonymous";
