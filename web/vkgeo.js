@@ -15,7 +15,7 @@ function requestSettings() {
     VK.callMethod("showSettingsBox", VK_ACCESS_SETTINGS);
 }
 
-function createControlPanelImage(img_class, user_id, update_time, battery_status, battery_level, src, size) {
+function createControlPanelImage(img_class, user_id, battery_status, battery_level, src, size) {
     function drawIcon() {
         if ((image === null || (image.complete && image.naturalWidth > 0)) &&
             (label === null || (label.complete && label.naturalWidth > 0))) {
@@ -85,43 +85,35 @@ function createControlPanelImage(img_class, user_id, update_time, battery_status
         image.src = src;
     }
 
-    if (user_id !== "") {
-        if ((new Date()).getTime() / 1000 > update_time + DATA_TIMEOUT) {
-            label = document.createElement("img");
+    if (battery_status === "CHARGING" || battery_status === "DISCHARGING") {
+        label = document.createElement("img");
 
-            label.crossOrigin = "anonymous";
-            label.onload      = drawIcon;
-            label.src         = "images/avatar_obsolete_data_label.png";
-        } else if (battery_status === "CHARGING" || battery_status === "DISCHARGING") {
-            label = document.createElement("img");
+        label.crossOrigin = "anonymous";
+        label.onload      = drawIcon;
 
-            label.crossOrigin = "anonymous";
-            label.onload      = drawIcon;
-
-            if (battery_level < 25) {
-                if (battery_status === "CHARGING") {
-                    label.src = "images/avatar_battery_25_charging_label.png";
-                } else {
-                    label.src = "images/avatar_battery_25_label.png";
-                }
-            } else if (battery_level < 50) {
-                if (battery_status === "CHARGING") {
-                    label.src = "images/avatar_battery_50_charging_label.png";
-                } else {
-                    label.src = "images/avatar_battery_50_label.png";
-                }
-            } else if (battery_level < 75) {
-                if (battery_status === "CHARGING") {
-                    label.src = "images/avatar_battery_75_charging_label.png";
-                } else {
-                    label.src = "images/avatar_battery_75_label.png";
-                }
+        if (battery_level < 25) {
+            if (battery_status === "CHARGING") {
+                label.src = "images/avatar_battery_25_charging_label.png";
             } else {
-                if (battery_status === "CHARGING") {
-                    label.src = "images/avatar_battery_100_charging_label.png";
-                } else {
-                    label.src = "images/avatar_battery_100_label.png";
-                }
+                label.src = "images/avatar_battery_25_label.png";
+            }
+        } else if (battery_level < 50) {
+            if (battery_status === "CHARGING") {
+                label.src = "images/avatar_battery_50_charging_label.png";
+            } else {
+                label.src = "images/avatar_battery_50_label.png";
+            }
+        } else if (battery_level < 75) {
+            if (battery_status === "CHARGING") {
+                label.src = "images/avatar_battery_75_charging_label.png";
+            } else {
+                label.src = "images/avatar_battery_75_label.png";
+            }
+        } else {
+            if (battery_status === "CHARGING") {
+                label.src = "images/avatar_battery_100_charging_label.png";
+            } else {
+                label.src = "images/avatar_battery_100_label.png";
             }
         }
     }
@@ -254,7 +246,7 @@ function runPeriodicUpdate() {
             control_panel.removeChild(control_panel.lastChild);
         }
 
-        control_panel.appendChild(createControlPanelImage("SHOW_ALL", "", 0, "", 0, "images/button_show_all.png", [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]));
+        control_panel.appendChild(createControlPanelImage("SHOW_ALL", "", "", 0, "images/button_show_all.png", [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]));
 
         let markers = marker_source.getFeatures();
 
@@ -263,7 +255,7 @@ function runPeriodicUpdate() {
                 let user_id = markers[i].getId();
 
                 if (user_id === "") {
-                    let my_image = createControlPanelImage("SHOW_MARKER", "", 0, "", 0, my_photo_100, [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]);
+                    let my_image = createControlPanelImage("SHOW_MARKER", "", "", 0, my_photo_100, [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]);
 
                     if (control_panel.firstChild && control_panel.firstChild.nextSibling) {
                         control_panel.insertBefore(my_image, control_panel.firstChild.nextSibling);
@@ -271,8 +263,7 @@ function runPeriodicUpdate() {
                         control_panel.appendChild(my_image);
                     }
                 } else if (friends_map.hasOwnProperty(user_id)) {
-                    control_panel.appendChild(createControlPanelImage("SHOW_MARKER", user_id, friends_map[user_id].update_time,
-                                                                                              friends_map[user_id].battery_status,
+                    control_panel.appendChild(createControlPanelImage("SHOW_MARKER", user_id, friends_map[user_id].battery_status,
                                                                                               friends_map[user_id].battery_level,
                                                                                               friends_map[user_id].photo_100, [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]));
 
@@ -633,7 +624,7 @@ VK.init(function() {
                                     }
 
                                     let control_panel = document.getElementById("controlPanel");
-                                    let my_image      = createControlPanelImage("SHOW_MARKER", "", 0, "", 0, my_photo_100, [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]);
+                                    let my_image      = createControlPanelImage("SHOW_MARKER", "", "", 0, my_photo_100, [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]);
 
                                     if (control_panel.firstChild && control_panel.firstChild.nextSibling) {
                                         control_panel.insertBefore(my_image, control_panel.firstChild.nextSibling);
