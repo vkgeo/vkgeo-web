@@ -77,9 +77,7 @@ function createControlPanelImage(img_class, user_id, battery_status, battery_lev
     image.crossOrigin = "anonymous";
     image.onload      = drawIcon;
 
-    if (src.match(/camera_50\.png/)) {
-        image.src = "images/camera_50.png";
-    } else if (src.match(/camera_100\.png/)) {
+    if (src.match(/camera_100\.png/)) {
         image.src = "images/camera_100.png";
     } else {
         image.src = src;
@@ -164,9 +162,7 @@ function createMarkerImage(marker, update_time, src, size) {
             image.crossOrigin = "anonymous";
             image.onload      = drawIcon;
 
-            if (src.match(/camera_50\.png/)) {
-                image.src = "images/camera_50.png";
-            } else if (src.match(/camera_100\.png/)) {
+            if (src.match(/camera_100\.png/)) {
                 image.src = "images/camera_100.png";
             } else {
                 image.src = src;
@@ -287,7 +283,7 @@ function runPeriodicUpdate() {
                 if (offset + data.response.items.length < data.response.count) {
                     setTimeout(function() {
                         VK.api("friends.get", {
-                            "fields": "photo_50,photo_100",
+                            "fields": "photo_100",
                             "offset": offset + data.response.items.length,
                             "v":      VK_API_V
                         }, function(data) {
@@ -391,7 +387,7 @@ function runPeriodicUpdate() {
                                                     }
 
                                                     frnd_marker.setStyle(new ol.style.Style({
-                                                        "image": createMarkerImage(frnd_marker, friends_map[user_id].update_time, friends_map[user_id].photo_50, [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE])
+                                                        "image": createMarkerImage(frnd_marker, friends_map[user_id].update_time, friends_map[user_id].photo_100, [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE])
                                                     }));
 
                                                     frnd_marker.set("firstName",  friends_map[user_id].first_name);
@@ -500,7 +496,7 @@ function runPeriodicUpdate() {
     }
 
     VK.api("friends.get", {
-        "fields": "photo_50,photo_100",
+        "fields": "photo_100",
         "v":      VK_API_V
     }, function(data) {
         updateFriends(data, 0);
@@ -508,7 +504,6 @@ function runPeriodicUpdate() {
 }
 
 let map_was_touched = false;
-let my_photo_50     = "images/camera_50.png";
 let my_photo_100    = "images/camera_100.png";
 let my_marker       = null;
 let tracked_marker  = null;
@@ -594,13 +589,12 @@ VK.init(function() {
             navigator.geolocation.watchPosition(function(position) {
                 if (my_marker === null) {
                     VK.api("users.get", {
-                        "fields": "photo_50,photo_100",
+                        "fields": "photo_100",
                         "v":      VK_API_V
                     }, function(data) {
                         if (my_marker === null) {
                             if (data.hasOwnProperty("response")) {
                                 if (data.response && data.response.length === 1) {
-                                    my_photo_50  = data.response[0].photo_50;
                                     my_photo_100 = data.response[0].photo_100;
 
                                     my_marker = new ol.Feature({
@@ -610,7 +604,7 @@ VK.init(function() {
                                     my_marker.setId("");
 
                                     my_marker.setStyle(new ol.style.Style({
-                                        "image": createMarkerImage(my_marker, (new Date()).getTime() / 1000, my_photo_50, [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE])
+                                        "image": createMarkerImage(my_marker, (new Date()).getTime() / 1000, my_photo_100, [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE])
                                     }));
 
                                     marker_source.addFeature(my_marker);
