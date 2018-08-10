@@ -8,7 +8,7 @@ const VK_ACCESS_SETTINGS       = 2048 | 2;
 const VK_REQUEST_INTERVAL      = 500;
 const VK_MAX_BATCH_SIZE        = 25;
 const VK_MAX_NOTES_GET_COUNT   = 100;
-const VK_API_V                 = "5.78";
+const VK_API_V                 = "5.80";
 const DATA_NOTE_TITLE          = "VKGeo Data";
 
 function requestSettings() {
