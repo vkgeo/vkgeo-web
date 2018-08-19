@@ -168,7 +168,7 @@ function createMarkerImage(marker, update_time, src, size) {
                 image.src = src;
             }
 
-            if ((new Date()).getTime() / 1000 > update_time + DATA_TIMEOUT) {
+            if ((new Date()).getTime() / 1000 - update_time > DATA_TIMEOUT) {
                 label = document.createElement("img");
 
                 label.crossOrigin = "anonymous";
