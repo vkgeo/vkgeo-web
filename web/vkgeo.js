@@ -1,5 +1,5 @@
 const UPDATE_INTERVAL          = 60000;
-const DATA_TIMEOUT             = 12 * 60 * 60;
+const DATA_TIMEOUT             = 24 * 60 * 60;
 const MARKER_IMAGE_SIZE        = 48;
 const CONTROL_PANEL_IMAGE_SIZE = 64;
 const MAP_CENTER_ROTATION      = 0.0;
