@@ -8,7 +8,7 @@ const VK_ACCESS_SETTINGS       = 2048 | 2;
 const VK_REQUEST_INTERVAL      = 500;
 const VK_MAX_BATCH_SIZE        = 25;
 const VK_MAX_NOTES_GET_COUNT   = 100;
-const VK_API_V                 = "5.80";
+const VK_API_V                 = "5.92";
 const DATA_NOTE_TITLE          = "VKGeo Data";
 
 function requestSettings() {
@@ -296,7 +296,7 @@ function runPeriodicUpdate() {
                     let notes_list      = [];
 
                     for (let i = 0; i < friends_list.length; i = i + VK_MAX_BATCH_SIZE) {
-                        let code = "var result = [];";
+                        let code = "return [";
 
                         for (let j = 0; j < VK_MAX_BATCH_SIZE; j++) {
                             if (i + j < friends_list.length) {
@@ -310,11 +310,17 @@ function runPeriodicUpdate() {
                                 friends_map[user_id].battery_status = "";
                                 friends_map[user_id].battery_level  = 0;
 
-                                code = code + "result.push(API.notes.get({\"user_id\": " + friends_list[i + j].id + ", \"count\": " + VK_MAX_NOTES_GET_COUNT + ", \"sort\": 0}).items);";
+                                code = code + "API.notes.get({\"user_id\":" + friends_list[i + j].id + ",\"count\":" + VK_MAX_NOTES_GET_COUNT + ",\"sort\":0}).items";
+
+                                if (j < VK_MAX_BATCH_SIZE - 1 && i + j < friends_list.length - 1) {
+                                    code = code + ",";
+                                }
+                            } else {
+                                break;
                             }
                         }
 
-                        code = code + "return result;";
+                        code = code + "];";
 
                         setTimeout(function() {
                             VK.api("execute", {
