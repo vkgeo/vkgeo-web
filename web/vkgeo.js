@@ -298,32 +298,33 @@ function runPeriodicUpdate() {
                     let notes_list             = [];
 
                     for (let i = 0; i < friends_list.length; i++) {
-                        let user_id = friends_list[i].id.toString();
+                        if (!friends_list[i].hasOwnProperty("deactivated")) {
+                            let user_id = friends_list[i].id.toString();
 
-                        friends_map[user_id] = friends_list[i];
+                            friends_map[user_id] = friends_list[i];
 
-                        if (!friends_map[user_id].hasOwnProperty("first_name")) {
-                            friends_map[user_id].first_name = "";
-                        }
-                        if (!friends_map[user_id].hasOwnProperty("last_name")) {
-                            friends_map[user_id].last_name = "";
-                        }
-                        if (!friends_map[user_id].hasOwnProperty("photo_100")) {
-                            friends_map[user_id].photo_100 = DEFAULT_PHOTO_100_URL;
-                        }
+                            if (!friends_map[user_id].hasOwnProperty("first_name")) {
+                                friends_map[user_id].first_name = "";
+                            }
+                            if (!friends_map[user_id].hasOwnProperty("last_name")) {
+                                friends_map[user_id].last_name = "";
+                            }
+                            if (!friends_map[user_id].hasOwnProperty("photo_100")) {
+                                friends_map[user_id].photo_100 = DEFAULT_PHOTO_100_URL;
+                            }
 
-                        friends_map[user_id].update_time    = 0;
-                        friends_map[user_id].latitude       = 0;
-                        friends_map[user_id].longitude      = 0;
-                        friends_map[user_id].battery_status = "";
-                        friends_map[user_id].battery_level  = 0;
+                            friends_map[user_id].update_time    = 0;
+                            friends_map[user_id].latitude       = 0;
+                            friends_map[user_id].longitude      = 0;
+                            friends_map[user_id].battery_status = "";
+                            friends_map[user_id].battery_level  = 0;
 
-                        let deactivated       = friends_list[i].hasOwnProperty("deactivated")       && friends_list[i].deactivated;
-                        let is_closed         = friends_list[i].hasOwnProperty("is_closed")         && friends_list[i].is_closed;
-                        let can_access_closed = friends_list[i].hasOwnProperty("can_access_closed") && friends_list[i].can_access_closed;
+                            let is_closed         = friends_list[i].hasOwnProperty("is_closed")         && friends_list[i].is_closed;
+                            let can_access_closed = friends_list[i].hasOwnProperty("can_access_closed") && friends_list[i].can_access_closed;
 
-                        if (!deactivated && (!is_closed || can_access_closed)) {
-                            available_friends_list.push(friends_list[i]);
+                            if (is_closed || can_access_closed) {
+                                available_friends_list.push(friends_list[i]);
+                            }
                         }
                     }
 
