@@ -322,7 +322,7 @@ function runPeriodicUpdate() {
                             let is_closed         = friends_list[i].hasOwnProperty("is_closed")         && friends_list[i].is_closed;
                             let can_access_closed = friends_list[i].hasOwnProperty("can_access_closed") && friends_list[i].can_access_closed;
 
-                            if (is_closed || can_access_closed) {
+                            if (!is_closed || can_access_closed) {
                                 available_friends_list.push(friends_list[i]);
                             }
                         }
