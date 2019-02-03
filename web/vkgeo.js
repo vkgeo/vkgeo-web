@@ -292,50 +292,58 @@ function runPeriodicUpdate() {
                         });
                     }, VK_REQUEST_INTERVAL);
                 } else {
-                    let notes_req_count        = 0;
-                    let friends_map            = {};
-                    let available_friends_list = [];
-                    let notes_list             = [];
+                    let notes_req_count     = 0;
+                    let friends_map         = {};
+                    let accessible_frnd_ids = [];
+                    let notes_list          = [];
 
                     for (let i = 0; i < friends_list.length; i++) {
-                        if (!friends_list[i].hasOwnProperty("deactivated")) {
-                            let user_id = friends_list[i].id.toString();
+                        if (friends_list[i].hasOwnProperty("id") && typeof friends_list[i].id === "number"
+                                                                 && !isNaN(friends_list[i].id) && isFinite(friends_list[i].id)) {
+                            if (!friends_list[i].deactivated) {
+                                let user_id = friends_list[i].id.toString();
 
-                            friends_map[user_id] = friends_list[i];
+                                friends_map[user_id] = {};
 
-                            if (!friends_map[user_id].hasOwnProperty("first_name")) {
-                                friends_map[user_id].first_name = "";
+                                if (friends_list[i].hasOwnProperty("first_name") && typeof friends_list[i].first_name === "string") {
+                                    friends_map[user_id].first_name = friends_list[i].first_name;
+                                } else {
+                                    friends_map[user_id].first_name = "";
+                                }
+                                if (friends_list[i].hasOwnProperty("last_name") && typeof friends_list[i].last_name === "string") {
+                                    friends_map[user_id].last_name = friends_list[i].last_name;
+                                } else {
+                                    friends_map[user_id].last_name = "";
+                                }
+                                if (friends_list[i].hasOwnProperty("photo_100") && typeof friends_list[i].photo_100 === "string") {
+                                    friends_map[user_id].photo_100 = friends_list[i].photo_100;
+                                } else {
+                                    friends_map[user_id].photo_100 = DEFAULT_PHOTO_100_URL;
+                                }
+
+                                friends_map[user_id].update_time    = 0;
+                                friends_map[user_id].latitude       = 0;
+                                friends_map[user_id].longitude      = 0;
+                                friends_map[user_id].battery_status = "";
+                                friends_map[user_id].battery_level  = 0;
+
+                                if (!friends_list[i].is_closed || friends_list[i].can_access_closed) {
+                                    accessible_frnd_ids.push(friends_list[i].id);
+                                }
                             }
-                            if (!friends_map[user_id].hasOwnProperty("last_name")) {
-                                friends_map[user_id].last_name = "";
-                            }
-                            if (!friends_map[user_id].hasOwnProperty("photo_100")) {
-                                friends_map[user_id].photo_100 = DEFAULT_PHOTO_100_URL;
-                            }
-
-                            friends_map[user_id].update_time    = 0;
-                            friends_map[user_id].latitude       = 0;
-                            friends_map[user_id].longitude      = 0;
-                            friends_map[user_id].battery_status = "";
-                            friends_map[user_id].battery_level  = 0;
-
-                            let is_closed         = friends_list[i].hasOwnProperty("is_closed")         && friends_list[i].is_closed;
-                            let can_access_closed = friends_list[i].hasOwnProperty("can_access_closed") && friends_list[i].can_access_closed;
-
-                            if (!is_closed || can_access_closed) {
-                                available_friends_list.push(friends_list[i]);
-                            }
+                        } else {
+                            console.log("updateFriends() : invalid friend entry");
                         }
                     }
 
-                    for (let i = 0; i < available_friends_list.length; i = i + VK_MAX_BATCH_SIZE) {
+                    for (let i = 0; i < accessible_frnd_ids.length; i = i + VK_MAX_BATCH_SIZE) {
                         let code = "return [";
 
                         for (let j = 0; j < VK_MAX_BATCH_SIZE; j++) {
-                            if (i + j < available_friends_list.length) {
-                                code = code + "API.notes.get({\"user_id\":" + available_friends_list[i + j].id + ",\"count\":" + VK_MAX_NOTES_GET_COUNT + ",\"sort\":0}).items";
+                            if (i + j < accessible_frnd_ids.length) {
+                                code = code + "API.notes.get({\"user_id\":" + accessible_frnd_ids[i + j] + ",\"count\":" + VK_MAX_NOTES_GET_COUNT + ",\"sort\":0}).items";
 
-                                if (j < VK_MAX_BATCH_SIZE - 1 && i + j < available_friends_list.length - 1) {
+                                if (j < VK_MAX_BATCH_SIZE - 1 && i + j < accessible_frnd_ids.length - 1) {
                                     code = code + ",";
                                 }
                             } else {
@@ -376,65 +384,71 @@ function runPeriodicUpdate() {
                                     let updated_friends = {};
 
                                     for (let i = 0; i < notes_list.length; i++) {
-                                        let user_id = notes_list[i].owner_id.toString();
+                                        if (notes_list[i].hasOwnProperty("text")     && typeof notes_list[i].text     === "string" &&
+                                            notes_list[i].hasOwnProperty("owner_id") && typeof notes_list[i].owner_id === "number"
+                                                                                     && !isNaN(notes_list[i].owner_id) && isFinite(notes_list[i].owner_id)) {
+                                            let user_id = notes_list[i].owner_id.toString();
 
-                                        if (friends_map.hasOwnProperty(user_id)) {
-                                            let base64_regexp = /\{\{\{([^\}]+)\}\}\}/;
-                                            let regexp_result = base64_regexp.exec(notes_list[i].text);
+                                            if (friends_map.hasOwnProperty(user_id)) {
+                                                let base64_regexp = /\{\{\{([^\}]+)\}\}\}/;
+                                                let regexp_result = base64_regexp.exec(notes_list[i].text);
 
-                                            if (regexp_result && regexp_result.length === 2) {
-                                                let user_data = null;
+                                                if (regexp_result && regexp_result.length === 2) {
+                                                    let user_data = null;
 
-                                                try {
-                                                    user_data = JSON.parse(atob(regexp_result[1]));
-                                                } catch (err) {
+                                                    try {
+                                                        user_data = JSON.parse(atob(regexp_result[1]));
+                                                    } catch (err) {
+                                                        console.log("updateFriends() : invalid user data");
+                                                    }
+
+                                                    if (user_data && user_data.hasOwnProperty("update_time") && typeof user_data.update_time === "number"
+                                                                                                             && !isNaN(user_data.update_time) && isFinite(user_data.update_time) &&
+                                                                     user_data.hasOwnProperty("latitude")    && typeof user_data.latitude === "number"
+                                                                                                             && !isNaN(user_data.latitude) && isFinite(user_data.latitude) &&
+                                                                     user_data.hasOwnProperty("longitude")   && typeof user_data.longitude === "number"
+                                                                                                             && !isNaN(user_data.longitude) && isFinite(user_data.longitude)) {
+                                                        friends_map[user_id].update_time = user_data.update_time;
+                                                        friends_map[user_id].latitude    = user_data.latitude;
+                                                        friends_map[user_id].longitude   = user_data.longitude;
+
+                                                        let frnd_marker = marker_source.getFeatureById(user_id);
+
+                                                        if (frnd_marker === null) {
+                                                            frnd_marker = new ol.Feature({
+                                                                "geometry": new ol.geom.Point(ol.proj.fromLonLat([friends_map[user_id].longitude, friends_map[user_id].latitude]))
+                                                            });
+
+                                                            frnd_marker.setId(user_id);
+
+                                                            marker_source.addFeature(frnd_marker);
+                                                        } else {
+                                                            frnd_marker.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([friends_map[user_id].longitude, friends_map[user_id].latitude])));
+                                                        }
+
+                                                        frnd_marker.setStyle(new ol.style.Style({
+                                                            "image": createMarkerImage(frnd_marker, friends_map[user_id].update_time, friends_map[user_id].photo_100, [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE])
+                                                        }));
+
+                                                        frnd_marker.set("firstName",  friends_map[user_id].first_name);
+                                                        frnd_marker.set("lastName",   friends_map[user_id].last_name);
+                                                        frnd_marker.set("updateTime", friends_map[user_id].update_time);
+
+                                                        if (user_data.hasOwnProperty("battery_status") && typeof user_data.battery_status === "string" &&
+                                                            user_data.hasOwnProperty("battery_level")  && typeof user_data.battery_level  === "number"
+                                                                                                       && !isNaN(user_data.battery_level) && isFinite(user_data.battery_level)) {
+                                                            friends_map[user_id].battery_status = user_data.battery_status;
+                                                            friends_map[user_id].battery_level  = user_data.battery_level;
+                                                        }
+
+                                                        updated_friends[user_id] = true;
+                                                    }
+                                                } else {
                                                     console.log("updateFriends() : invalid user data");
                                                 }
-
-                                                if (user_data && user_data.hasOwnProperty("update_time") && typeof user_data.update_time === "number"
-                                                                                                         && !isNaN(user_data.update_time) && isFinite(user_data.update_time) &&
-                                                                 user_data.hasOwnProperty("latitude")    && typeof user_data.latitude === "number"
-                                                                                                         && !isNaN(user_data.latitude) && isFinite(user_data.latitude) &&
-                                                                 user_data.hasOwnProperty("longitude")   && typeof user_data.longitude === "number"
-                                                                                                         && !isNaN(user_data.longitude) && isFinite(user_data.longitude)) {
-                                                    friends_map[user_id].update_time = user_data.update_time;
-                                                    friends_map[user_id].latitude    = user_data.latitude;
-                                                    friends_map[user_id].longitude   = user_data.longitude;
-
-                                                    let frnd_marker = marker_source.getFeatureById(user_id);
-
-                                                    if (frnd_marker === null) {
-                                                        frnd_marker = new ol.Feature({
-                                                            "geometry": new ol.geom.Point(ol.proj.fromLonLat([friends_map[user_id].longitude, friends_map[user_id].latitude]))
-                                                        });
-
-                                                        frnd_marker.setId(user_id);
-
-                                                        marker_source.addFeature(frnd_marker);
-                                                    } else {
-                                                        frnd_marker.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([friends_map[user_id].longitude, friends_map[user_id].latitude])));
-                                                    }
-
-                                                    frnd_marker.setStyle(new ol.style.Style({
-                                                        "image": createMarkerImage(frnd_marker, friends_map[user_id].update_time, friends_map[user_id].photo_100, [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE])
-                                                    }));
-
-                                                    frnd_marker.set("firstName",  friends_map[user_id].first_name);
-                                                    frnd_marker.set("lastName",   friends_map[user_id].last_name);
-                                                    frnd_marker.set("updateTime", friends_map[user_id].update_time);
-
-                                                    if (user_data.hasOwnProperty("battery_status") && typeof user_data.battery_status === "string" &&
-                                                        user_data.hasOwnProperty("battery_level")  && typeof user_data.battery_level  === "number"
-                                                                                                   && !isNaN(user_data.battery_level) && isFinite(user_data.battery_level)) {
-                                                        friends_map[user_id].battery_status = user_data.battery_status;
-                                                        friends_map[user_id].battery_level  = user_data.battery_level;
-                                                    }
-
-                                                    updated_friends[user_id] = true;
-                                                }
-                                            } else {
-                                                console.log("updateFriends() : invalid user data");
                                             }
+                                        } else {
+                                            console.log("updateFriends() : invalid note entry");
                                         }
                                     }
 
@@ -626,7 +640,7 @@ VK.init(function() {
                         if (my_marker === null) {
                             if (data.hasOwnProperty("response")) {
                                 if (data.response && data.response.length === 1) {
-                                    if (data.response[0].hasOwnProperty("photo_100")) {
+                                    if (data.response[0].hasOwnProperty("photo_100") && typeof data.response[0].photo_100 === "string") {
                                         my_photo_100 = data.response[0].photo_100;
                                     } else {
                                         my_photo_100 = DEFAULT_PHOTO_100_URL;
@@ -644,12 +658,12 @@ VK.init(function() {
 
                                     marker_source.addFeature(my_marker);
 
-                                    if (data.response[0].hasOwnProperty("first_name")) {
+                                    if (data.response[0].hasOwnProperty("first_name") && typeof data.response[0].first_name === "string") {
                                         my_marker.set("firstName", data.response[0].first_name);
                                     } else {
                                         my_marker.set("firstName", "");
                                     }
-                                    if (data.response[0].hasOwnProperty("last_name")) {
+                                    if (data.response[0].hasOwnProperty("last_name") && typeof data.response[0].last_name === "string") {
                                         my_marker.set("lastName", data.response[0].last_name);
                                     } else {
                                         my_marker.set("lastName", "");
