@@ -366,25 +366,25 @@ function runPeriodicUpdate() {
 
                     if (accessible_frnd_ids.length > 0) {
                         for (let i = 0; i < accessible_frnd_ids.length; i = i + VK_MAX_BATCH_SIZE) {
-                            let code = "return [";
+                            let execute_code = "return [";
 
                             for (let j = 0; j < VK_MAX_BATCH_SIZE; j++) {
                                 if (i + j < accessible_frnd_ids.length) {
-                                    code = code + "API.notes.get({\"user_id\":" + accessible_frnd_ids[i + j] + ",\"count\":" + VK_MAX_NOTES_GET_COUNT + ",\"sort\":0}).items";
+                                    execute_code = execute_code + "API.notes.get({\"user_id\":" + accessible_frnd_ids[i + j] + ",\"count\":" + VK_MAX_NOTES_GET_COUNT + ",\"sort\":0}).items";
 
                                     if (j < VK_MAX_BATCH_SIZE - 1 && i + j < accessible_frnd_ids.length - 1) {
-                                        code = code + ",";
+                                        execute_code = execute_code + ",";
                                     }
                                 } else {
                                     break;
                                 }
                             }
 
-                            code = code + "];";
+                            execute_code = execute_code + "];";
 
                             setTimeout(function() {
                                 VK.api("execute", {
-                                    "code": code,
+                                    "code": execute_code,
                                     "v":    VK_API_V
                                 }, function(data) {
                                     if (data.hasOwnProperty("response")) {
