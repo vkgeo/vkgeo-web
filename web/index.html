@@ -26,7 +26,7 @@
         </div>
         <div id="settingsPanel">
             <p id="settingsPanelText"></p>
-            <button id="settingsPanelButton" onClick="requestSettings()"></button>
+            <button id="settingsPanelButton" onClick="VKGeo.requestSettings()"></button>
         </div>
         <div id="fatalErrorPanel">
             <p id="fatalErrorPanelText"></p>
@@ -74,7 +74,7 @@
                     app_script.src = "vkgeo.js";
 
                     document.getElementsByTagName("head")[0].appendChild(app_script);
-                } catch (err) {
+                } catch (ex) {
                     displayFatalError(_("Please update your browser to start using this app."));
                 }
             }
