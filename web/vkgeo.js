@@ -401,7 +401,7 @@ let VKGeo = (function() {
                                                 }
                                             }
                                         } else {
-                                            if (data.hasOwnProperty("error")) {
+                                            if (data.hasOwnProperty("error") && data.error) {
                                                 console.log("updateFriends() : execute(notes.get) request failed : " + data.error.error_msg);
                                             } else {
                                                 console.log("updateFriends() : execute(notes.get) request failed : " + data);
@@ -521,7 +521,7 @@ let VKGeo = (function() {
                     setTimeout(runPeriodicUpdate, UPDATE_INTERVAL);
                 }
             } else {
-                if (data.hasOwnProperty("error")) {
+                if (data.hasOwnProperty("error") && data.error) {
                     console.log("updateFriends() : friends.get request failed : " + data.error.error_msg);
                 } else {
                     console.log("updateFriends() : friends.get request failed : " + data);
@@ -688,7 +688,7 @@ let VKGeo = (function() {
                                             }
                                         }
                                     } else {
-                                        if (data.hasOwnProperty("error")) {
+                                        if (data.hasOwnProperty("error") && data.error) {
                                             console.log("init() : users.get request failed : " + data.error.error_msg);
                                         } else {
                                             console.log("init() : users.get request failed : " + data);
