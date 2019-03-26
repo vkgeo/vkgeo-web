@@ -610,9 +610,12 @@ map.on("pointerdrag", function(event) {
 
 VK.init(function() {
     function init(settings) {
+        /* Due to issue with wrong block params after refresh
         document.getElementById("adPanel").style.display      = "flex";
+        */
         document.getElementById("controlPanel").style.display = "flex";
 
+        /* Due to issue with wrong block params after refresh
         VK.Widgets.Ads("adPanel", {}, {
             "ad_unit_id":     105075,
             "ad_unit_hash":   "498223b8d2f6d0f460567d0b69f52cfc",
@@ -622,6 +625,7 @@ VK.init(function() {
             "ad_type":        "horizontal",
             "ads_count":      1
         });
+        */
 
         runPeriodicUpdate();
 
