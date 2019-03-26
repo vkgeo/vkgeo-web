@@ -617,7 +617,10 @@ VK.init(function() {
             "ad_unit_id":     105075,
             "ad_unit_hash":   "498223b8d2f6d0f460567d0b69f52cfc",
             "ad_unit_width":  260,
-            "ad_unit_height": 125
+            "ad_unit_height": 125,
+            "ad_unit_type":   "horizontal",
+            "ad_type":        "horizontal",
+            "ads_count":      1
         });
 
         runPeriodicUpdate();
