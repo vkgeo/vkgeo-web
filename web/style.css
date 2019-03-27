@@ -11,7 +11,6 @@ body {
     height: 100%;
 }
 #markerTooltip {
-    margin:           auto;
     width:            auto;
     height:           auto;
     display:          none;
@@ -23,19 +22,18 @@ body {
     overflow:         auto;
 }
 #markerTooltipNameText {
-    margin:        6px 6px 2px 6px;
-    text-align:    center;
-    color:         white;
-    font-size:     10pt;
+    margin:     6px 6px 2px 6px;
+    text-align: center;
+    color:      white;
+    font-size:  10pt;
 }
 #markerTooltipUpdateTimeText {
-    margin:        2px 6px 6px 6px;
-    text-align:    center;
-    color:         white;
-    font-size:     10pt;
+    margin:     2px 6px 6px 6px;
+    text-align: center;
+    color:      white;
+    font-size:  10pt;
 }
 #adPanel {
-    margin:    auto;
     position:  absolute;
     width:     auto;
     height:    auto;
@@ -47,7 +45,6 @@ body {
     transform: translateX(-50%);
 }
 #controlPanel {
-    margin:           auto;
     position:         absolute;
     width:            84px;
     top:              10%;
@@ -67,7 +64,6 @@ body {
     margin: 8px 0px 8px 0px;
 }
 #invitationPanel {
-    margin:           auto;
     position:         absolute;
     height:           auto;
     top:              0;
@@ -83,13 +79,12 @@ body {
     overflow:         auto;
 }
 #invitationPanelText {
-    margin:        8px 8px 8px 8px;
-    text-align:    center;
-    color:         black;
-    font-size:     10pt;
+    margin:     8px 8px 8px 8px;
+    text-align: center;
+    color:      black;
+    font-size:  10pt;
 }
 #settingsPanel {
-    margin:           auto;
     position:         absolute;
     top:              35%;
     bottom:           35%;
@@ -106,10 +101,10 @@ body {
     overflow:         auto;
 }
 #settingsPanelText {
-    margin:        8px 8px 8px 8px;
-    text-align:    center;
-    color:         black;
-    font-size:     14pt;
+    margin:     8px 8px 8px 8px;
+    text-align: center;
+    color:      black;
+    font-size:  14pt;
 }
 #settingsPanelButton {
     margin:           8px 8px 8px 8px;
@@ -128,7 +123,6 @@ body {
     transform:  translateY(2px);
 }
 #fatalErrorPanel {
-    margin:           auto;
     position:         absolute;
     top:              35%;
     bottom:           35%;
@@ -144,9 +138,9 @@ body {
     overflow:         auto;
 }
 #fatalErrorPanelText {
-    margin:        8px 8px 8px 8px;
-    flex-basis:    90%;
-    text-align:    center;
-    color:         black;
-    font-size:     14pt;
+    margin:     8px 8px 8px 8px;
+    flex-basis: 90%;
+    text-align: center;
+    color:      black;
+    font-size:  14pt;
 }
