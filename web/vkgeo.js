@@ -1,4 +1,6 @@
 let VKGeo = (function() {
+    "use strict";
+
     const UPDATE_INTERVAL          = 60000;
     const DATA_TIMEOUT             = 24 * 60 * 60;
     const MARKER_IMAGE_SIZE        = 48;
