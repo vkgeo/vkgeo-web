@@ -323,10 +323,8 @@ let VKGeo = (function() {
                             });
                         }, VK_REQUEST_INTERVAL);
                     } else {
-                        let notes_req_count     = 0;
                         let friends_map         = {};
                         let accessible_frnd_ids = [];
-                        let notes_list          = [];
 
                         for (let i = 0; i < friends_list.length; i++) {
                             if (friends_list[i].hasOwnProperty("id") && typeof friends_list[i].id === "number"
@@ -368,6 +366,9 @@ let VKGeo = (function() {
                         }
 
                         if (accessible_frnd_ids.length > 0) {
+                            let notes_req_count = 0;
+                            let notes_list      = [];
+
                             for (let i = 0; i < accessible_frnd_ids.length; i = i + VK_MAX_BATCH_SIZE) {
                                 let execute_code = "return [";
 
