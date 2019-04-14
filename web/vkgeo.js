@@ -398,6 +398,8 @@ let VKGeo = (function() {
                                                         for (let j = 0; j < data.response[i].length; j++) {
                                                             if (data.response[i][j] && data.response[i][j].title === DATA_NOTE_TITLE) {
                                                                 notes_list.push(data.response[i][j]);
+
+                                                                break;
                                                             }
                                                         }
                                                     }
