@@ -1,5 +1,6 @@
-os:
-  - linux
+language: node_js
+
+os: linux
 
 addons:
   sonarcloud:
@@ -9,20 +10,16 @@ addons:
 
 script:
   - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-        echo && \
-        echo "--------- UNSHALLOW GIT FOR SONAR ---------" && \
-        echo && \
-        git fetch --unshallow && \
-        echo && \
-        echo "-------------- SONAR SCANNER --------------" && \
-        echo && \
-        sonar-scanner -Dsonar.projectKey=vkgeo:vkgeo-web \
-                      -Dsonar.projectName="VKGeo Web" \
-                      -Dsonar.projectVersion="$TRAVIS_BRANCH" \
-                      -Dsonar.sources=. \
-                      -Dsonar.sourceEncoding=UTF-8 \
-                      -Dsonar.cfamily.build-wrapper-output=bw-output
-
-        exit $?
-    fi
+    echo && \
+    echo "--------- UNSHALLOW GIT FOR SONAR ---------" && \
+    echo && \
+    git fetch --unshallow && \
+    echo && \
+    echo "-------------- SONAR SCANNER --------------" && \
+    echo && \
+    sonar-scanner -Dsonar.projectKey=vkgeo:vkgeo-web \
+                  -Dsonar.projectName="VKGeo Web" \
+                  -Dsonar.projectVersion="$TRAVIS_BRANCH" \
+                  -Dsonar.sources=. \
+                  -Dsonar.sourceEncoding=UTF-8 \
+                  -Dsonar.cfamily.build-wrapper-output=bw-output
