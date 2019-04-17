@@ -272,11 +272,7 @@ let VKGeo = (function() {
                 }
             }
 
-            if (friends_on_map > 0) {
-                return true;
-            } else {
-                return false;
-            }
+            return (friends_on_map > 0);
         }
 
         function cleanupMarkers(updated_friends) {
