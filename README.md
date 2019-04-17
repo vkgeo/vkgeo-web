@@ -14,6 +14,8 @@
 Посетите   [официальный  сайт  проекта](https://vkgeo.sourceforge.io/)  для
 получения дополнительной информации.
 
+---
+
 | Travis Build Status | SonarCloud Quality Gate Status |
 | :---: | :---: |
 | [![Travis Build Status](https://travis-ci.org/vkgeo/vkgeo-web.svg?branch=master)](https://travis-ci.org/vkgeo/vkgeo-web) | [![SonarCloud Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=vkgeo%3Avkgeo-web&metric=alert_status)](https://sonarcloud.io/dashboard?id=vkgeo%3Avkgeo-web) |
