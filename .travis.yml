@@ -1,0 +1,28 @@
+os:
+  - linux
+
+addons:
+  sonarcloud:
+    organization: "vkgeo-github"
+    token:
+      secure: "lZwoB+DnciUqa5bnWgMfo5ZOK2sNh57wYmygaIWydtVT0U46f1eEcsgLOGKJd+yFXCizDw9/kQaB6rp92vbd8AXvD62+sv8ph6EzG4vT05KyWvy4ryTKW1Q8Vg7gksicmbABR1eLc2db+VrMwMiGUZWJFTowdSEsI6/2qSCrEO/M26kcEmtWL1e1WOaSIY6bvKyj2bUNIKYVIpIh4/oWw+cGGEJkiMl+NX/iIoPVRqW0iRRQlSRrGP3DiAVtpYht693pENYGFEMXNlA2YhfQ2on0Z2SA/Cahs+h5CsN8JuzrR0cExfJRsYSFMCuxUF8ypNtQa2h6JhAlAhZq2NjF3sEMJXH9FRMchWtLOkiLr11VLOSHz+k3iCqxCNvcy8UWRiX2598JS3xF1ZJsD6eagKcLWdWujW5AKcCXgvVCFa5dM7NvPxppglapTGveQclUA4fiQ2I0YujfN4RnoyzcsapP8it6Mhl4PRMDywYi3F1AhU+0vbsm/etmFm8G3q8KxZXaNeyAXUONV3y4+rHzsNp/QOmkJHDuVpP7e6wkri0n8JaX9BxPOu5VkMx2oZ+LRxH/rm/zJoQAM5Zo8qBK3vZsLqLyLJ1/Xl+OqG8B8HOJReAieVGTIanakjAiR1VYN7so4tXKejza65a/0UM44nYxT9GYWzPSyDu9JPbgPA8="
+
+script:
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+        echo && \
+        echo "--------- UNSHALLOW GIT FOR SONAR ---------" && \
+        echo && \
+        git fetch --unshallow && \
+        echo && \
+        echo "-------------- SONAR SCANNER --------------" && \
+        echo && \
+        sonar-scanner -Dsonar.projectKey=vkgeo:vkgeo-web \
+                      -Dsonar.projectName="VKGeo Web" \
+                      -Dsonar.projectVersion="$TRAVIS_BRANCH" \
+                      -Dsonar.sources=. \
+                      -Dsonar.sourceEncoding=UTF-8 \
+                      -Dsonar.cfamily.build-wrapper-output=bw-output
+
+        exit $?
+    fi
