@@ -13,3 +13,12 @@
 
 Посетите   [официальный  сайт  проекта](https://vkgeo.sourceforge.io/)  для
 получения дополнительной информации.
+
+| Travis Build Status | SonarCloud Quality Gate Status |
+| :---: | :---: |
+| [![Travis Build Status](https://travis-ci.org/vkgeo/vkgeo-web.svg?branch=master)](https://travis-ci.org/vkgeo/vkgeo-web) | [![SonarCloud Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=vkgeo%3Avkgeo-web&metric=alert_status)](https://sonarcloud.io/dashboard?id=vkgeo%3Avkgeo-web) |
+
+| Reliability | Security | Maintainability |
+| :---: | :---: | :---: |
+| [![SonarCloud Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=vkgeo%3Avkgeo-web&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=vkgeo%3Avkgeo-web) | [![SonarCloud Security Rating](https://sonarcloud.io/api/project_badges/measure?project=vkgeo%3Avkgeo-web&metric=security_rating)](https://sonarcloud.io/dashboard?id=vkgeo%3Avkgeo-web) | [![SonarCloud Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=vkgeo%3Avkgeo-web&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=vkgeo%3Avkgeo-web) |
+| [![SonarCloud Bugs](https://sonarcloud.io/api/project_badges/measure?project=vkgeo%3Avkgeo-web&metric=bugs)](https://sonarcloud.io/dashboard?id=vkgeo%3Avkgeo-web) | [![SonarCloud Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=vkgeo%3Avkgeo-web&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=vkgeo%3Avkgeo-web) | [![SonarCloud Code Smells](https://sonarcloud.io/api/project_badges/measure?project=vkgeo%3Avkgeo-web&metric=code_smells)](https://sonarcloud.io/dashboard?id=vkgeo%3Avkgeo-web) |
