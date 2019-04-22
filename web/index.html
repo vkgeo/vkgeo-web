@@ -5,13 +5,14 @@
 
         <meta charset="UTF-8">
 
-        <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="css/ol-5.3.0.css">
+        <link rel="stylesheet" href="css/style.css">
 
-        <script src="https://openlayers.org/en/v4.6.5/build/ol.js"></script>
         <script src="https://www.localeplanet.com/api/auto/icu.js"></script>
         <script src="https://www.localeplanet.com/api/translate.js"></script>
         <script src="https://vk.com/js/api/xd_connection.js?2"></script>
+
+        <script src="js/ol-5.3.0.js"></script>
     </head>
     <body>
         <div id="map"></div>
@@ -73,7 +74,7 @@
 
                     var app_script = document.createElement("script");
 
-                    app_script.src = "vkgeo.js";
+                    app_script.src = "js/vkgeo.js";
 
                     document.getElementsByTagName("head")[0].appendChild(app_script);
                 } catch (ex) {
