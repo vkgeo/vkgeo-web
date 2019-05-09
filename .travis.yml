@@ -16,10 +16,12 @@ script:
     echo "--------- UNSHALLOW GIT FOR SONAR ---------" && \
     echo && \
     git fetch --unshallow && \
-    echo && \
-    echo "-------------- SONAR SCANNER --------------" && \
-    echo && \
-    sonar-scanner -Dsonar.projectKey=vkgeo:vkgeo-web \
-                  -Dsonar.projectName="VKGeo Web" \
-                  -Dsonar.sources=. \
-                  -Dsonar.sourceEncoding=UTF-8
+    if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then \
+        echo && \
+        echo "-------------- SONAR SCANNER --------------" && \
+        echo && \
+        sonar-scanner -Dsonar.projectKey=vkgeo:vkgeo-web \
+                      -Dsonar.projectName="VKGeo Web" \
+                      -Dsonar.sources=. \
+                      -Dsonar.sourceEncoding=UTF-8; \
+    fi
