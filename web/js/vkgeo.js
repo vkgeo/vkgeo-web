@@ -228,7 +228,7 @@ let VKGeo = (function() {
         let friends_list = [];
 
         function showInvitationPanel() {
-            document.getElementById("invitationPanelText").innerHTML = _("This app is a web companion for VKGeo Friends on Map mobile application. <a href=\"https://vkgeo.sourceforge.io\" target=\"_blank\">Install VKGeo on your mobile device</a> and invite friends to it so you can see each other on the map.");
+            document.getElementById("invitationPanelText").innerHTML = _("This app is a web companion for VKGeo Friends on Map mobile application. <a href=\"https://vkgeo.sourceforge.io\" target=\"_blank\" rel=\"noopener\">Install VKGeo on your mobile device</a> and invite friends to it so you can see each other on the map.");
 
             document.getElementById("invitationPanel").style.display = "flex";
         }
