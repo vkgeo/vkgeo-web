@@ -370,15 +370,11 @@ let VKGeo = (function() {
                             for (let i = 0; i < accessible_frnd_ids.length; i = i + VK_MAX_BATCH_SIZE) {
                                 let execute_code = "return [";
 
-                                for (let j = 0; j < VK_MAX_BATCH_SIZE; j++) {
-                                    if (i + j < accessible_frnd_ids.length) {
-                                        execute_code = execute_code + "API.notes.get({\"user_id\":" + accessible_frnd_ids[i + j] + ",\"count\":" + VK_MAX_NOTES_GET_COUNT + ",\"sort\":0}).items";
+                                for (let j = 0; j < VK_MAX_BATCH_SIZE && i + j < accessible_frnd_ids.length; j++) {
+                                    execute_code = execute_code + "API.notes.get({\"user_id\":" + accessible_frnd_ids[i + j] + ",\"count\":" + VK_MAX_NOTES_GET_COUNT + ",\"sort\":0}).items";
 
-                                        if (j < VK_MAX_BATCH_SIZE - 1 && i + j < accessible_frnd_ids.length - 1) {
-                                            execute_code = execute_code + ",";
-                                        }
-                                    } else {
-                                        break;
+                                    if (j < VK_MAX_BATCH_SIZE - 1 && i + j < accessible_frnd_ids.length - 1) {
+                                        execute_code = execute_code + ",";
                                     }
                                 }
 
@@ -729,7 +725,6 @@ let VKGeo = (function() {
             }
 
             let initialized = false;
-            let settings    = (new URL(document.location)).searchParams.get("api_settings");
 
             VK.addCallback("onSettingsChanged", function(settings) {
                 if ((settings & VK_ACCESS_SETTINGS) === VK_ACCESS_SETTINGS) {
@@ -745,6 +740,8 @@ let VKGeo = (function() {
             VK.addCallback("onSettingsCancel", function() {
                 showSettingsPanel();
             });
+
+            let settings = (new URL(document.location)).searchParams.get("api_settings");
 
             if ((settings & VK_ACCESS_SETTINGS) === VK_ACCESS_SETTINGS) {
                 initialized = init();
