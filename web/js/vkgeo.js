@@ -309,13 +309,15 @@ let VKGeo = (function() {
                     friends_list = friends_list.concat(data.response.items);
 
                     if (data.response.items.length > 0 && offset + data.response.items.length < data.response.count) {
+                        let next_offset = offset + data.response.items.length;
+
                         setTimeout(function() {
                             VK.api("friends.get", {
                                 "fields": "photo_100",
-                                "offset": offset + data.response.items.length,
+                                "offset": next_offset,
                                 "v":      VK_API_V
                             }, function(data) {
-                                updateFriends(data, offset + data.response.items.length);
+                                updateFriends(data, next_offset);
                             });
                         }, VK_REQUEST_INTERVAL);
                     } else {
