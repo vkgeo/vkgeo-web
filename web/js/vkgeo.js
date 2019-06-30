@@ -617,7 +617,7 @@ let VKGeo = (function() {
 
     try {
         VK.init(function() {
-            function init(settings) {
+            function init() {
                 document.getElementById("adPanel").style.display      = "flex";
                 document.getElementById("controlPanel").style.display = "flex";
 
