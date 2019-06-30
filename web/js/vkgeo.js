@@ -262,7 +262,7 @@ let VKGeo = (function() {
                         } else {
                             control_panel.appendChild(my_image);
                         }
-                    } else if (friends_map.hasOwnProperty(user_id)) {
+                    } else if (friends_map[user_id]) {
                         control_panel.appendChild(createControlPanelImage("SHOW_MARKER", user_id, friends_map[user_id].battery_status,
                                                                                                   friends_map[user_id].battery_level,
                                                                                                   friends_map[user_id].photo_100, [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]));
@@ -282,7 +282,7 @@ let VKGeo = (function() {
                 let markers_to_remove = [];
 
                 for (let i = 0; i < markers.length; i++) {
-                    if (markers[i].getId() !== "" && !updated_friends.hasOwnProperty(markers[i].getId())) {
+                    if (markers[i].getId() !== "" && !updated_friends[markers[i].getId()]) {
                         markers_to_remove.push(markers[i]);
                     }
                 }
@@ -304,8 +304,8 @@ let VKGeo = (function() {
         }
 
         function updateFriends(data, offset) {
-            if (data.hasOwnProperty("response")) {
-                if (data.response && data.response.items) {
+            if (data.response) {
+                if (data.response.items) {
                     friends_list = friends_list.concat(data.response.items);
 
                     if (data.response.items.length > 0 && offset + data.response.items.length < data.response.count) {
@@ -325,24 +325,24 @@ let VKGeo = (function() {
                         let accessible_frnd_ids = [];
 
                         for (let i = 0; i < friends_list.length; i++) {
-                            if (friends_list[i].hasOwnProperty("id") && typeof friends_list[i].id === "number"
-                                                                     && !isNaN(friends_list[i].id) && isFinite(friends_list[i].id)) {
+                            if (friends_list[i] && typeof friends_list[i].id === "number" && !isNaN(friends_list[i].id) &&
+                                                                                              isFinite(friends_list[i].id)) {
                                 if (!friends_list[i].deactivated) {
                                     let user_id = friends_list[i].id.toString();
 
                                     friends_map[user_id] = {};
 
-                                    if (friends_list[i].hasOwnProperty("first_name") && typeof friends_list[i].first_name === "string") {
+                                    if (typeof friends_list[i].first_name === "string") {
                                         friends_map[user_id].first_name = friends_list[i].first_name;
                                     } else {
                                         friends_map[user_id].first_name = "";
                                     }
-                                    if (friends_list[i].hasOwnProperty("last_name") && typeof friends_list[i].last_name === "string") {
+                                    if (typeof friends_list[i].last_name === "string") {
                                         friends_map[user_id].last_name = friends_list[i].last_name;
                                     } else {
                                         friends_map[user_id].last_name = "";
                                     }
-                                    if (friends_list[i].hasOwnProperty("photo_100") && typeof friends_list[i].photo_100 === "string") {
+                                    if (typeof friends_list[i].photo_100 === "string") {
                                         friends_map[user_id].photo_100 = friends_list[i].photo_100;
                                     } else {
                                         friends_map[user_id].photo_100 = DEFAULT_PHOTO_100_URL;
@@ -385,22 +385,20 @@ let VKGeo = (function() {
                                         "code": execute_code,
                                         "v":    VK_API_V
                                     }, function(data) {
-                                        if (data.hasOwnProperty("response")) {
-                                            if (data.response) {
-                                                for (let i = 0; i < data.response.length; i++) {
-                                                    if (data.response[i]) {
-                                                        for (let j = 0; j < data.response[i].length; j++) {
-                                                            if (data.response[i][j] && data.response[i][j].title === DATA_NOTE_TITLE) {
-                                                                notes_list.push(data.response[i][j]);
+                                        if (data.response) {
+                                            for (let i = 0; i < data.response.length; i++) {
+                                                if (data.response[i]) {
+                                                    for (let j = 0; j < data.response[i].length; j++) {
+                                                        if (data.response[i][j] && data.response[i][j].title === DATA_NOTE_TITLE) {
+                                                            notes_list.push(data.response[i][j]);
 
-                                                                break;
-                                                            }
+                                                            break;
                                                         }
                                                     }
                                                 }
                                             }
                                         } else {
-                                            if (data.hasOwnProperty("error") && data.error) {
+                                            if (data.error) {
                                                 console.log("updateFriends() : execute(notes.get) request failed : " + data.error.error_msg);
                                             } else {
                                                 console.log("updateFriends() : execute(notes.get) request failed : " + data);
@@ -413,12 +411,12 @@ let VKGeo = (function() {
                                             let updated_friends = {};
 
                                             for (let i = 0; i < notes_list.length; i++) {
-                                                if (notes_list[i].hasOwnProperty("text")     && typeof notes_list[i].text     === "string" &&
-                                                    notes_list[i].hasOwnProperty("owner_id") && typeof notes_list[i].owner_id === "number"
-                                                                                             && !isNaN(notes_list[i].owner_id) && isFinite(notes_list[i].owner_id)) {
+                                                if (notes_list[i] && typeof notes_list[i].text     === "string" &&
+                                                                     typeof notes_list[i].owner_id === "number" && !isNaN(notes_list[i].owner_id) &&
+                                                                                                                    isFinite(notes_list[i].owner_id)) {
                                                     let user_id = notes_list[i].owner_id.toString();
 
-                                                    if (friends_map.hasOwnProperty(user_id)) {
+                                                    if (friends_map[user_id]) {
                                                         let base64_regexp = /\{\{\{([^\}]+)\}\}\}/;
                                                         let regexp_result = base64_regexp.exec(notes_list[i].text);
 
@@ -431,12 +429,12 @@ let VKGeo = (function() {
                                                                 console.log("updateFriends() : invalid user data");
                                                             }
 
-                                                            if (user_data && user_data.hasOwnProperty("update_time") && typeof user_data.update_time === "number"
-                                                                                                                     && !isNaN(user_data.update_time) && isFinite(user_data.update_time) &&
-                                                                             user_data.hasOwnProperty("latitude")    && typeof user_data.latitude === "number"
-                                                                                                                     && !isNaN(user_data.latitude) && isFinite(user_data.latitude) &&
-                                                                             user_data.hasOwnProperty("longitude")   && typeof user_data.longitude === "number"
-                                                                                                                     && !isNaN(user_data.longitude) && isFinite(user_data.longitude)) {
+                                                            if (user_data && typeof user_data.update_time === "number" && !isNaN(user_data.update_time) &&
+                                                                                                                           isFinite(user_data.update_time) &&
+                                                                             typeof user_data.latitude    === "number" && !isNaN(user_data.latitude) &&
+                                                                                                                           isFinite(user_data.latitude) &&
+                                                                             typeof user_data.longitude   === "number" && !isNaN(user_data.longitude) &&
+                                                                                                                           isFinite(user_data.longitude)) {
                                                                 friends_map[user_id].update_time = user_data.update_time;
                                                                 friends_map[user_id].latitude    = user_data.latitude;
                                                                 friends_map[user_id].longitude   = user_data.longitude;
@@ -463,9 +461,9 @@ let VKGeo = (function() {
                                                                 frnd_marker.set("lastName",   friends_map[user_id].last_name);
                                                                 frnd_marker.set("updateTime", friends_map[user_id].update_time);
 
-                                                                if (user_data.hasOwnProperty("battery_status") && typeof user_data.battery_status === "string" &&
-                                                                    user_data.hasOwnProperty("battery_level")  && typeof user_data.battery_level  === "number"
-                                                                                                               && !isNaN(user_data.battery_level) && isFinite(user_data.battery_level)) {
+                                                                if (typeof user_data.battery_status === "string" &&
+                                                                    typeof user_data.battery_level  === "number" && !isNaN(user_data.battery_level) &&
+                                                                                                                     isFinite(user_data.battery_level)) {
                                                                     friends_map[user_id].battery_status = user_data.battery_status;
                                                                     friends_map[user_id].battery_level  = user_data.battery_level;
                                                                 }
@@ -520,7 +518,7 @@ let VKGeo = (function() {
                     setTimeout(runPeriodicUpdate, UPDATE_INTERVAL);
                 }
             } else {
-                if (data.hasOwnProperty("error") && data.error) {
+                if (data.error) {
                     console.log("updateFriends() : friends.get request failed : " + data.error.error_msg);
                 } else {
                     console.log("updateFriends() : friends.get request failed : " + data);
@@ -631,7 +629,7 @@ let VKGeo = (function() {
 
                 runPeriodicUpdate();
 
-                if ("geolocation" in navigator) {
+                if (navigator.geolocation) {
                     navigator.geolocation.watchPosition(function(position) {
                         if (my_marker === null) {
                             VK.api("users.get", {
@@ -639,9 +637,9 @@ let VKGeo = (function() {
                                 "v":      VK_API_V
                             }, function(data) {
                                 if (my_marker === null) {
-                                    if (data.hasOwnProperty("response")) {
-                                        if (data.response && data.response.length === 1) {
-                                            if (data.response[0].hasOwnProperty("photo_100") && typeof data.response[0].photo_100 === "string") {
+                                    if (data.response) {
+                                        if (data.response.length === 1 && data.response[0]) {
+                                            if (typeof data.response[0].photo_100 === "string") {
                                                 my_photo_100 = data.response[0].photo_100;
                                             } else {
                                                 my_photo_100 = DEFAULT_PHOTO_100_URL;
@@ -659,12 +657,12 @@ let VKGeo = (function() {
 
                                             marker_source.addFeature(my_marker);
 
-                                            if (data.response[0].hasOwnProperty("first_name") && typeof data.response[0].first_name === "string") {
+                                            if (typeof data.response[0].first_name === "string") {
                                                 my_marker.set("firstName", data.response[0].first_name);
                                             } else {
                                                 my_marker.set("firstName", "");
                                             }
-                                            if (data.response[0].hasOwnProperty("last_name") && typeof data.response[0].last_name === "string") {
+                                            if (typeof data.response[0].last_name === "string") {
                                                 my_marker.set("lastName", data.response[0].last_name);
                                             } else {
                                                 my_marker.set("lastName", "");
@@ -686,9 +684,11 @@ let VKGeo = (function() {
                                             } else {
                                                 control_panel.appendChild(my_image);
                                             }
+                                        } else {
+                                            console.log("init() : invalid response to users.get request");
                                         }
                                     } else {
-                                        if (data.hasOwnProperty("error") && data.error) {
+                                        if (data.error) {
                                             console.log("init() : users.get request failed : " + data.error.error_msg);
                                         } else {
                                             console.log("init() : users.get request failed : " + data);
