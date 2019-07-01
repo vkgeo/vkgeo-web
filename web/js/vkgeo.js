@@ -325,8 +325,7 @@ let VKGeo = (function() {
                         let accessible_frnd_ids = [];
 
                         for (let i = 0; i < friends_list.length; i++) {
-                            if (friends_list[i] && typeof friends_list[i].id === "number" && !isNaN(friends_list[i].id) &&
-                                                                                              isFinite(friends_list[i].id)) {
+                            if (friends_list[i] && typeof friends_list[i].id === "number" && isFinite(friends_list[i].id)) {
                                 if (!friends_list[i].deactivated) {
                                     let user_id = friends_list[i].id.toString();
 
@@ -412,8 +411,7 @@ let VKGeo = (function() {
 
                                             for (let i = 0; i < notes_list.length; i++) {
                                                 if (notes_list[i] && typeof notes_list[i].text     === "string" &&
-                                                                     typeof notes_list[i].owner_id === "number" && !isNaN(notes_list[i].owner_id) &&
-                                                                                                                    isFinite(notes_list[i].owner_id)) {
+                                                                     typeof notes_list[i].owner_id === "number" && isFinite(notes_list[i].owner_id)) {
                                                     let user_id = notes_list[i].owner_id.toString();
 
                                                     if (friends_map[user_id]) {
@@ -429,12 +427,9 @@ let VKGeo = (function() {
                                                                 console.log("updateFriends() : invalid user data");
                                                             }
 
-                                                            if (user_data && typeof user_data.update_time === "number" && !isNaN(user_data.update_time) &&
-                                                                                                                           isFinite(user_data.update_time) &&
-                                                                             typeof user_data.latitude    === "number" && !isNaN(user_data.latitude) &&
-                                                                                                                           isFinite(user_data.latitude) &&
-                                                                             typeof user_data.longitude   === "number" && !isNaN(user_data.longitude) &&
-                                                                                                                           isFinite(user_data.longitude)) {
+                                                            if (user_data && typeof user_data.update_time === "number" && isFinite(user_data.update_time) &&
+                                                                             typeof user_data.latitude    === "number" && isFinite(user_data.latitude) &&
+                                                                             typeof user_data.longitude   === "number" && isFinite(user_data.longitude)) {
                                                                 friends_map[user_id].update_time = user_data.update_time;
                                                                 friends_map[user_id].latitude    = user_data.latitude;
                                                                 friends_map[user_id].longitude   = user_data.longitude;
@@ -462,8 +457,7 @@ let VKGeo = (function() {
                                                                 frnd_marker.set("updateTime", friends_map[user_id].update_time);
 
                                                                 if (typeof user_data.battery_status === "string" &&
-                                                                    typeof user_data.battery_level  === "number" && !isNaN(user_data.battery_level) &&
-                                                                                                                     isFinite(user_data.battery_level)) {
+                                                                    typeof user_data.battery_level  === "number" && isFinite(user_data.battery_level)) {
                                                                     friends_map[user_id].battery_status = user_data.battery_status;
                                                                     friends_map[user_id].battery_level  = user_data.battery_level;
                                                                 }
