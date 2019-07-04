@@ -19,6 +19,24 @@ let VKGeo = (function() {
         VK.callMethod("showSettingsBox", VK_ACCESS_SETTINGS);
     }
 
+    function enqueueVKApiRequest(method_name, params, callback) {
+        vk_request_queue.push({
+            "methodName": method_name,
+            "params":     params,
+            "callback":   callback
+        });
+    }
+
+    function runVKRequestQueue() {
+        let request = vk_request_queue.shift();
+
+        if (request) {
+            VK.api(request.methodName, request.params, request.callback);
+        }
+
+        setTimeout(runVKRequestQueue, VK_REQUEST_INTERVAL);
+    }
+
     function createControlPanelImage(img_class, user_id, battery_status, battery_level, src, size) {
         function drawIcon() {
             if ((image === null || (image.complete && image.naturalWidth > 0)) &&
@@ -311,15 +329,13 @@ let VKGeo = (function() {
                     if (data.response.items.length > 0 && offset + data.response.items.length < data.response.count) {
                         let next_offset = offset + data.response.items.length;
 
-                        setTimeout(function() {
-                            VK.api("friends.get", {
-                                "fields": "photo_100",
-                                "offset": next_offset,
-                                "v":      VK_API_V
-                            }, function(data) {
-                                updateFriends(data, next_offset);
-                            });
-                        }, VK_REQUEST_INTERVAL);
+                        enqueueVKApiRequest("friends.get", {
+                            "fields": "photo_100",
+                            "offset": next_offset,
+                            "v":      VK_API_V
+                        }, function(data) {
+                            updateFriends(data, next_offset);
+                        });
                     } else {
                         let friends_map         = {};
                         let accessible_frnd_ids = [];
@@ -379,112 +395,110 @@ let VKGeo = (function() {
 
                                 execute_code = execute_code + "];";
 
-                                setTimeout(function() {
-                                    VK.api("execute", {
-                                        "code": execute_code,
-                                        "v":    VK_API_V
-                                    }, function(data) {
-                                        if (data.response) {
-                                            for (let i = 0; i < data.response.length; i++) {
-                                                if (data.response[i]) {
-                                                    for (let j = 0; j < data.response[i].length; j++) {
-                                                        if (data.response[i][j] && data.response[i][j].title === DATA_NOTE_TITLE) {
-                                                            notes_list.push(data.response[i][j]);
+                                enqueueVKApiRequest("execute", {
+                                    "code": execute_code,
+                                    "v":    VK_API_V
+                                }, function(data) {
+                                    if (data.response) {
+                                        for (let i = 0; i < data.response.length; i++) {
+                                            if (data.response[i]) {
+                                                for (let j = 0; j < data.response[i].length; j++) {
+                                                    if (data.response[i][j] && data.response[i][j].title === DATA_NOTE_TITLE) {
+                                                        notes_list.push(data.response[i][j]);
 
-                                                            break;
-                                                        }
+                                                        break;
                                                     }
                                                 }
                                             }
-                                        } else {
-                                            if (data.error) {
-                                                console.log("updateFriends() : execute(notes.get) request failed : " + data.error.error_msg);
-                                            } else {
-                                                console.log("updateFriends() : execute(notes.get) request failed : " + data);
-                                            }
                                         }
+                                    } else {
+                                        if (data.error) {
+                                            console.log("updateFriends() : execute(notes.get) request failed : " + data.error.error_msg);
+                                        } else {
+                                            console.log("updateFriends() : execute(notes.get) request failed : " + data);
+                                        }
+                                    }
 
-                                        notes_req_count--;
+                                    notes_req_count--;
 
-                                        if (notes_req_count === 0) {
-                                            let updated_friends = {};
+                                    if (notes_req_count === 0) {
+                                        let updated_friends = {};
 
-                                            for (let i = 0; i < notes_list.length; i++) {
-                                                if (notes_list[i] && typeof notes_list[i].text     === "string" &&
-                                                                     typeof notes_list[i].owner_id === "number" && isFinite(notes_list[i].owner_id)) {
-                                                    let user_id = notes_list[i].owner_id.toString();
+                                        for (let i = 0; i < notes_list.length; i++) {
+                                            if (notes_list[i] && typeof notes_list[i].text     === "string" &&
+                                                                 typeof notes_list[i].owner_id === "number" && isFinite(notes_list[i].owner_id)) {
+                                                let user_id = notes_list[i].owner_id.toString();
 
-                                                    if (friends_map[user_id]) {
-                                                        let base64_regexp = /\{\{\{([^\}]+)\}\}\}/;
-                                                        let regexp_result = base64_regexp.exec(notes_list[i].text);
+                                                if (friends_map[user_id]) {
+                                                    let base64_regexp = /\{\{\{([^\}]+)\}\}\}/;
+                                                    let regexp_result = base64_regexp.exec(notes_list[i].text);
 
-                                                        if (regexp_result && regexp_result.length === 2) {
-                                                            let user_data = null;
+                                                    if (regexp_result && regexp_result.length === 2) {
+                                                        let user_data = null;
 
-                                                            try {
-                                                                user_data = JSON.parse(atob(regexp_result[1]));
-                                                            } catch (ex) {
-                                                                console.log("updateFriends() : invalid user data");
-                                                            }
-
-                                                            if (user_data && typeof user_data.update_time === "number" && isFinite(user_data.update_time) &&
-                                                                             typeof user_data.latitude    === "number" && isFinite(user_data.latitude) &&
-                                                                             typeof user_data.longitude   === "number" && isFinite(user_data.longitude)) {
-                                                                friends_map[user_id].update_time = user_data.update_time;
-                                                                friends_map[user_id].latitude    = user_data.latitude;
-                                                                friends_map[user_id].longitude   = user_data.longitude;
-
-                                                                let frnd_marker = marker_source.getFeatureById(user_id);
-
-                                                                if (frnd_marker === null) {
-                                                                    frnd_marker = new ol.Feature({
-                                                                        "geometry": new ol.geom.Point(ol.proj.fromLonLat([friends_map[user_id].longitude, friends_map[user_id].latitude]))
-                                                                    });
-
-                                                                    frnd_marker.setId(user_id);
-
-                                                                    marker_source.addFeature(frnd_marker);
-                                                                } else {
-                                                                    frnd_marker.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([friends_map[user_id].longitude, friends_map[user_id].latitude])));
-                                                                }
-
-                                                                frnd_marker.setStyle(new ol.style.Style({
-                                                                    "image": createMarkerImage(frnd_marker, friends_map[user_id].update_time, friends_map[user_id].photo_100, [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE])
-                                                                }));
-
-                                                                frnd_marker.set("firstName",  friends_map[user_id].first_name);
-                                                                frnd_marker.set("lastName",   friends_map[user_id].last_name);
-                                                                frnd_marker.set("updateTime", friends_map[user_id].update_time);
-
-                                                                if (typeof user_data.battery_status === "string" &&
-                                                                    typeof user_data.battery_level  === "number" && isFinite(user_data.battery_level)) {
-                                                                    friends_map[user_id].battery_status = user_data.battery_status;
-                                                                    friends_map[user_id].battery_level  = user_data.battery_level;
-                                                                }
-
-                                                                updated_friends[user_id] = true;
-                                                            }
-                                                        } else {
+                                                        try {
+                                                            user_data = JSON.parse(atob(regexp_result[1]));
+                                                        } catch (ex) {
                                                             console.log("updateFriends() : invalid user data");
                                                         }
+
+                                                        if (user_data && typeof user_data.update_time === "number" && isFinite(user_data.update_time) &&
+                                                                         typeof user_data.latitude    === "number" && isFinite(user_data.latitude) &&
+                                                                         typeof user_data.longitude   === "number" && isFinite(user_data.longitude)) {
+                                                            friends_map[user_id].update_time = user_data.update_time;
+                                                            friends_map[user_id].latitude    = user_data.latitude;
+                                                            friends_map[user_id].longitude   = user_data.longitude;
+
+                                                            let frnd_marker = marker_source.getFeatureById(user_id);
+
+                                                            if (frnd_marker === null) {
+                                                                frnd_marker = new ol.Feature({
+                                                                    "geometry": new ol.geom.Point(ol.proj.fromLonLat([friends_map[user_id].longitude, friends_map[user_id].latitude]))
+                                                                });
+
+                                                                frnd_marker.setId(user_id);
+
+                                                                marker_source.addFeature(frnd_marker);
+                                                            } else {
+                                                                frnd_marker.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([friends_map[user_id].longitude, friends_map[user_id].latitude])));
+                                                            }
+
+                                                            frnd_marker.setStyle(new ol.style.Style({
+                                                                "image": createMarkerImage(frnd_marker, friends_map[user_id].update_time, friends_map[user_id].photo_100, [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE])
+                                                            }));
+
+                                                            frnd_marker.set("firstName",  friends_map[user_id].first_name);
+                                                            frnd_marker.set("lastName",   friends_map[user_id].last_name);
+                                                            frnd_marker.set("updateTime", friends_map[user_id].update_time);
+
+                                                            if (typeof user_data.battery_status === "string" &&
+                                                                typeof user_data.battery_level  === "number" && isFinite(user_data.battery_level)) {
+                                                                friends_map[user_id].battery_status = user_data.battery_status;
+                                                                friends_map[user_id].battery_level  = user_data.battery_level;
+                                                            }
+
+                                                            updated_friends[user_id] = true;
+                                                        }
+                                                    } else {
+                                                        console.log("updateFriends() : invalid user data");
                                                     }
-                                                } else {
-                                                    console.log("updateFriends() : invalid note entry");
                                                 }
-                                            }
-
-                                            cleanupMarkers(updated_friends);
-
-                                            if (updateControlPanel(friends_map)) {
-                                                hideInvitationPanel();
                                             } else {
-                                                showInvitationPanel();
+                                                console.log("updateFriends() : invalid note entry");
                                             }
-
-                                            setTimeout(runPeriodicUpdate, UPDATE_INTERVAL);
                                         }
-                                    });
-                                }, VK_REQUEST_INTERVAL * (i + VK_MAX_BATCH_SIZE) / VK_MAX_BATCH_SIZE);
+
+                                        cleanupMarkers(updated_friends);
+
+                                        if (updateControlPanel(friends_map)) {
+                                            hideInvitationPanel();
+                                        } else {
+                                            showInvitationPanel();
+                                        }
+
+                                        setTimeout(runPeriodicUpdate, UPDATE_INTERVAL);
+                                    }
+                                });
 
                                 notes_req_count++;
                             }
@@ -522,20 +536,19 @@ let VKGeo = (function() {
             }
         }
 
-        setTimeout(function() {
-            VK.api("friends.get", {
-                "fields": "photo_100",
-                "v":      VK_API_V
-            }, function(data) {
-                updateFriends(data, 0);
-            });
-        }, VK_REQUEST_INTERVAL);
+        enqueueVKApiRequest("friends.get", {
+            "fields": "photo_100",
+            "v":      VK_API_V
+        }, function(data) {
+            updateFriends(data, 0);
+        });
     }
 
-    let map_was_touched = false;
-    let my_photo_100    = DEFAULT_PHOTO_100_URL;
-    let my_marker       = null;
-    let tracked_marker  = null;
+    let map_was_touched  = false;
+    let my_photo_100     = DEFAULT_PHOTO_100_URL;
+    let my_marker        = null;
+    let tracked_marker   = null;
+    let vk_request_queue = [];
 
     let marker_source = new ol.source.Vector({
         "features": []
@@ -621,12 +634,13 @@ let VKGeo = (function() {
                     "ads_count":      1
                 });
 
+                runVKRequestQueue();
                 runPeriodicUpdate();
 
                 if (navigator.geolocation) {
                     navigator.geolocation.watchPosition(function(position) {
                         if (my_marker === null) {
-                            VK.api("users.get", {
+                            enqueueVKApiRequest("users.get", {
                                 "fields": "photo_100",
                                 "v":      VK_API_V
                             }, function(data) {
