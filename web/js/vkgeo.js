@@ -584,6 +584,7 @@ let VKGeo = (function() {
             }
         })
     });
+
     map.on("singleclick", function(event) {
         map.forEachFeatureAtPixel(event.pixel, function(feature, layer) {
             if (feature.getId()) {
@@ -591,6 +592,7 @@ let VKGeo = (function() {
             }
         });
     });
+
     map.on("pointermove", function(event) {
         let feature = map.forEachFeatureAtPixel(event.pixel, function(feature, layer) {
             return feature;
@@ -609,10 +611,12 @@ let VKGeo = (function() {
             document.getElementById("markerTooltip").style.display = "none";
         }
     });
+
     map.on("dblclick", function(event) {
         map_was_touched = true;
         tracked_marker  = null;
     });
+
     map.on("pointerdrag", function(event) {
         map_was_touched = true;
         tracked_marker  = null;
@@ -745,6 +749,7 @@ let VKGeo = (function() {
                     showSettingsPanel();
                 }
             });
+
             VK.addCallback("onSettingsCancel", function() {
                 showSettingsPanel();
             });
