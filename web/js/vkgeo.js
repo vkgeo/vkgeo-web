@@ -559,7 +559,8 @@ let VKGeo = (function() {
         "layers": [
             new ol.layer.Tile({
                 "source": new ol.source.OSM({
-                    "url": "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}@2x.png"
+                    "url":          "https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}@2x.png",
+                    "attributions": "&#169; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors."
                 })
             }),
             new ol.layer.Vector({
