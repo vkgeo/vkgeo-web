@@ -3,15 +3,18 @@ let VKGeo = (function() {
 
     const UPDATE_INTERVAL          = 60000;
     const DATA_TIMEOUT             = 24 * 60 * 60;
-    const MARKER_IMAGE_SIZE        = 48;
-    const CONTROL_PANEL_IMAGE_SIZE = 64;
+    const MARKER_IMAGE_SIZE        = {"width": 48, "height": 48};
+    const MARKER_LABEL_SIZE        = {"width": 12, "height": 12};
+    const CONTROL_PANEL_IMAGE_SIZE = {"width": 64, "height": 64};
+    const CONTROL_PANEL_LABEL_SIZE = {"width": 12, "height": 18};
+    const MAP_PADDING              = 48;
     const MAP_CENTER_ROTATION      = 0.0;
     const MAP_CENTER_ZOOM          = 16.0;
     const VK_ACCESS_SETTINGS       = 2048 | 2;
     const VK_REQUEST_INTERVAL      = 500;
     const VK_MAX_BATCH_SIZE        = 25;
     const VK_MAX_NOTES_GET_COUNT   = 100;
-    const VK_API_V                 = "5.92";
+    const VK_API_V                 = "5.102";
     const DATA_NOTE_TITLE          = "VKGeo Data";
     const DEFAULT_PHOTO_100_URL    = "images/camera_100.png";
 
@@ -37,29 +40,30 @@ let VKGeo = (function() {
         setTimeout(runVKRequestQueue, VK_REQUEST_INTERVAL);
     }
 
-    function createControlPanelImage(img_class, user_id, battery_status, battery_level, src, size) {
+    function createControlPanelImage(img_class, user_id, battery_status, battery_level, src, size, label_size) {
         function drawIcon() {
             if ((image === null || (image.complete && image.naturalWidth > 0)) &&
                 (label === null || (label.complete && label.naturalWidth > 0))) {
                 const angle   = Math.PI / 4;
-                let   radius  = Math.min(size[0], size[1]) / 2;
+                let   radius  = Math.min(size.width, size.height) / 2;
                 let   context = canvas.getContext("2d");
 
                 context.save();
 
                 context.beginPath();
-                context.arc(size[0] / 2, size[1] / 2, radius, 0, 2 * Math.PI, false);
+                context.arc(size.width / 2, size.height / 2, radius, 0, 2 * Math.PI, false);
                 context.clip();
 
                 if (image) {
-                    context.drawImage(image, 0, 0, size[0], size[1]);
+                    context.drawImage(image, 0, 0, size.width, size.height);
                 }
 
                 context.restore();
 
                 if (label) {
-                    context.drawImage(label, size[0] / 2 + radius * Math.sin(angle) - label.width  / 2,
-                                             size[1] / 2 + radius * Math.cos(angle) - label.height / 2);
+                    context.drawImage(label, size.width  / 2 + radius * Math.sin(angle) - label_size.width  / 2,
+                                             size.height / 2 + radius * Math.cos(angle) - label_size.height / 2, label_size.width,
+                                                                                                                 label_size.height);
                 }
             }
         }
@@ -68,11 +72,11 @@ let VKGeo = (function() {
         let image  = null;
         let label  = null;
 
-        canvas.width           = size[0];
-        canvas.height          = size[1];
+        canvas.width           = size.width;
+        canvas.height          = size.height;
         canvas.className       = "controlPanelImage";
-        canvas.style.minWidth  = size[0] + "px";
-        canvas.style.minHeight = size[1] + "px";
+        canvas.style.minWidth  = size.width  + "px";
+        canvas.style.minHeight = size.height + "px";
 
         if (img_class === "SHOW_MARKER") {
             canvas.onclick = function() {
@@ -141,31 +145,32 @@ let VKGeo = (function() {
         return canvas;
     }
 
-    function createMarkerImage(marker, update_time, src, size) {
+    function createMarkerImage(marker, update_time, src, size, label_size) {
         return new ol.style.Icon({
             "img": (function() {
                 function drawIcon() {
                     if ((image === null || (image.complete && image.naturalWidth > 0)) &&
                         (label === null || (label.complete && label.naturalWidth > 0))) {
                         const angle   = Math.PI / 4;
-                        let   radius  = Math.min(size[0], size[1]) / 2;
+                        let   radius  = Math.min(size.width, size.height) / 2;
                         let   context = canvas.getContext("2d");
 
                         context.save();
 
                         context.beginPath();
-                        context.arc(size[0] / 2, size[1] / 2, radius, 0, 2 * Math.PI, false);
+                        context.arc(size.width / 2, size.height / 2, radius, 0, 2 * Math.PI, false);
                         context.clip();
 
                         if (image) {
-                            context.drawImage(image, 0, 0, size[0], size[1]);
+                            context.drawImage(image, 0, 0, size.width, size.height);
                         }
 
                         context.restore();
 
                         if (label) {
-                            context.drawImage(label, size[0] / 2 + radius * Math.sin(angle) - label.width  / 2,
-                                                     size[1] / 2 + radius * Math.cos(angle) - label.height / 2);
+                            context.drawImage(label, size.width  / 2 + radius * Math.sin(angle) - label_size.width  / 2,
+                                                     size.height / 2 + radius * Math.cos(angle) - label_size.height / 2, label_size.width,
+                                                                                                                         label_size.height);
                         }
 
                         marker.changed();
@@ -176,8 +181,8 @@ let VKGeo = (function() {
                 let image  = null;
                 let label  = null;
 
-                canvas.width  = size[0];
-                canvas.height = size[1];
+                canvas.width  = size.width;
+                canvas.height = size.height;
 
                 image = document.createElement("img");
 
@@ -200,7 +205,7 @@ let VKGeo = (function() {
 
                 return canvas;
             })(),
-            "imgSize": size
+            "imgSize": [size.width, size.height]
         });
     }
 
@@ -233,10 +238,10 @@ let VKGeo = (function() {
             }
 
             map.getView().fit(extent, {
-                "padding": [MARKER_IMAGE_SIZE,
-                            MARKER_IMAGE_SIZE + control_panel_width,
-                            MARKER_IMAGE_SIZE + ad_panel_height,
-                            MARKER_IMAGE_SIZE],
+                "padding": [MAP_PADDING,
+                            MAP_PADDING + control_panel_width,
+                            MAP_PADDING + ad_panel_height,
+                            MAP_PADDING],
                 "maxZoom": MAP_CENTER_ZOOM
             });
         }
@@ -264,7 +269,7 @@ let VKGeo = (function() {
                 control_panel.removeChild(control_panel.lastChild);
             }
 
-            control_panel.appendChild(createControlPanelImage("SHOW_ALL", "", "", 0, "images/button_show_all.png", [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]));
+            control_panel.appendChild(createControlPanelImage("SHOW_ALL", "", "", 0, "images/button_show_all.png", CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_LABEL_SIZE));
 
             let markers = marker_source.getFeatures();
 
@@ -273,7 +278,7 @@ let VKGeo = (function() {
                     let user_id = markers[i].getId();
 
                     if (user_id === "") {
-                        let my_image = createControlPanelImage("SHOW_MARKER", "", "", 0, my_photo_100, [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]);
+                        let my_image = createControlPanelImage("SHOW_MARKER", "", "", 0, my_photo_100, CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_LABEL_SIZE);
 
                         if (control_panel.firstChild && control_panel.firstChild.nextSibling) {
                             control_panel.insertBefore(my_image, control_panel.firstChild.nextSibling);
@@ -283,7 +288,8 @@ let VKGeo = (function() {
                     } else if (friends_map[user_id]) {
                         control_panel.appendChild(createControlPanelImage("SHOW_MARKER", user_id, friends_map[user_id].battery_status,
                                                                                                   friends_map[user_id].battery_level,
-                                                                                                  friends_map[user_id].photo_100, [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]));
+                                                                                                  friends_map[user_id].photo_100, CONTROL_PANEL_IMAGE_SIZE,
+                                                                                                                                  CONTROL_PANEL_LABEL_SIZE));
 
                         friends_on_map++;
                     }
@@ -464,7 +470,7 @@ let VKGeo = (function() {
                                                             }
 
                                                             frnd_marker.setStyle(new ol.style.Style({
-                                                                "image": createMarkerImage(frnd_marker, friends_map[user_id].update_time, friends_map[user_id].photo_100, [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE])
+                                                                "image": createMarkerImage(frnd_marker, friends_map[user_id].update_time, friends_map[user_id].photo_100, MARKER_IMAGE_SIZE, MARKER_LABEL_SIZE)
                                                             }));
 
                                                             frnd_marker.set("firstName",  friends_map[user_id].first_name);
@@ -665,7 +671,7 @@ let VKGeo = (function() {
                                             my_marker.setId("");
 
                                             my_marker.setStyle(new ol.style.Style({
-                                                "image": createMarkerImage(my_marker, (new Date()).getTime() / 1000, my_photo_100, [MARKER_IMAGE_SIZE, MARKER_IMAGE_SIZE])
+                                                "image": createMarkerImage(my_marker, (new Date()).getTime() / 1000, my_photo_100, MARKER_IMAGE_SIZE, MARKER_LABEL_SIZE)
                                             }));
 
                                             marker_source.addFeature(my_marker);
@@ -690,7 +696,7 @@ let VKGeo = (function() {
                                             }
 
                                             let control_panel = document.getElementById("controlPanel");
-                                            let my_image      = createControlPanelImage("SHOW_MARKER", "", "", 0, my_photo_100, [CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_IMAGE_SIZE]);
+                                            let my_image      = createControlPanelImage("SHOW_MARKER", "", "", 0, my_photo_100, CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_LABEL_SIZE);
 
                                             if (control_panel.firstChild && control_panel.firstChild.nextSibling) {
                                                 control_panel.insertBefore(my_image, control_panel.firstChild.nextSibling);
