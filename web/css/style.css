@@ -1,10 +1,14 @@
 html {
-    width:  100%;
-    height: 100%;
+    width:   100%;
+    height:  100%;
+    margin:  0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
 }
 body {
-    width:  100%;
-    height: 100%;
+    width:   100%;
+    height:  100%;
+    margin:  0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
 }
 #map {
     width:  100%;
@@ -108,6 +112,7 @@ body {
 }
 #settingsPanelButton {
     margin:           8px 8px 8px 8px;
+    padding:          8px 8px 8px 8px;
     background-color: steelblue;
     border-radius:    8px;
     border:           none;
@@ -116,7 +121,6 @@ body {
     text-align:       center;
     text-decoration:  none;
     box-shadow:       0 3px gray;
-    padding:          8px;
 }
 #settingsPanelButton:active {
     box-shadow: 0 3px darkgray;
