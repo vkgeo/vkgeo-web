@@ -218,6 +218,19 @@ let VKGeo = (function() {
     }
 
     function fitMapToAllMarkers() {
+        function getElementSize(elem) {
+            let result = {"width": 0, "height": 0};
+
+            if (elem.offsetWidth) {
+                result.width = elem.offsetWidth;
+            }
+            if (elem.offsetHeight) {
+                result.height = elem.offsetHeight;
+            }
+
+            return result;
+        }
+
         let markers = marker_source.getFeatures();
 
         if (markers && markers.length > 0) {
@@ -227,20 +240,10 @@ let VKGeo = (function() {
                 ol.extent.extend(extent, markers[i].getGeometry().getExtent());
             }
 
-            let ad_panel_height     = 0;
-            let control_panel_width = 0;
-
-            if (document.getElementById("adPanel").offsetHeight) {
-                ad_panel_height = document.getElementById("adPanel").offsetHeight;
-            }
-            if (document.getElementById("controlPanel").offsetWidth) {
-                control_panel_width = document.getElementById("controlPanel").offsetWidth;
-            }
-
             map.getView().fit(extent, {
                 "padding": [MAP_PADDING,
-                            MAP_PADDING + control_panel_width,
-                            MAP_PADDING + ad_panel_height,
+                            MAP_PADDING + getElementSize(document.getElementById("controlPanel")).width,
+                            MAP_PADDING + getElementSize(document.getElementById("adPanel")).height,
                             MAP_PADDING],
                 "maxZoom": MAP_CENTER_ZOOM
             });
