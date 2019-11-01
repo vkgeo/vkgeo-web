@@ -3,11 +3,9 @@ let VKGeo = (function() {
 
     const UPDATE_INTERVAL          = 60000;
     const DATA_TIMEOUT             = 24 * 60 * 60;
-    const MIN_DEVICE_PIXEL_RATIO   = 2.0;
-    const MARKER_IMAGE_SIZE        = {"width": 48, "height": 48};
-    const MARKER_LABEL_SIZE        = {"width": 12, "height": 12};
-    const CONTROL_PANEL_IMAGE_SIZE = {"width": 64, "height": 64};
-    const CONTROL_PANEL_LABEL_SIZE = {"width": 12, "height": 18};
+    const IMAGE_SIZE               = {"width": 100, "height": 100};
+    const MARKER_IMAGE_SIZE        = {"width": 48,  "height": 48};
+    const CONTROL_PANEL_IMAGE_SIZE = {"width": 64,  "height": 64};
     const MAP_PADDING              = 48;
     const MAP_CENTER_ROTATION      = 0.0;
     const MAP_CENTER_ZOOM          = 16.0;
@@ -41,12 +39,12 @@ let VKGeo = (function() {
         setTimeout(runVKRequestQueue, VK_REQUEST_INTERVAL);
     }
 
-    function createControlPanelImage(img_class, user_id, battery_status, battery_level, src, size, label_size) {
+    function createControlPanelImage(img_class, user_id, battery_status, battery_level, src) {
         function drawIcon() {
-            if ((image === null || (image.complete && image.naturalWidth > 0)) &&
-                (label === null || (label.complete && label.naturalWidth > 0))) {
+            if ((image          &&  image.complete && image.naturalWidth > 0 && image.naturalHeight > 0) &&
+                (label === null || (label.complete && label.naturalWidth > 0 && label.naturalHeight > 0))) {
                 const angle   = Math.PI / 4;
-                let   radius  = Math.min(size.width, size.height) / 2;
+                let   radius  = Math.min(IMAGE_SIZE.width, IMAGE_SIZE.height) / 2;
                 let   context = canvas.getContext("2d");
 
                 context.save();
@@ -56,19 +54,18 @@ let VKGeo = (function() {
                 context.save();
 
                 context.beginPath();
-                context.arc(size.width / 2, size.height / 2, radius, 0, 2 * Math.PI, false);
+                context.arc(IMAGE_SIZE.width / 2, IMAGE_SIZE.height / 2, radius, 0, 2 * Math.PI, false);
                 context.clip();
 
                 if (image) {
-                    context.drawImage(image, 0, 0, size.width, size.height);
+                    context.drawImage(image, 0, 0, IMAGE_SIZE.width, IMAGE_SIZE.height);
                 }
 
                 context.restore();
 
                 if (label) {
-                    context.drawImage(label, size.width  / 2 + radius * Math.sin(angle) - label_size.width  / 2,
-                                             size.height / 2 + radius * Math.cos(angle) - label_size.height / 2, label_size.width,
-                                                                                                                 label_size.height);
+                    context.drawImage(label, IMAGE_SIZE.width  / 2 + radius * Math.sin(angle) - label.naturalWidth  / 2,
+                                             IMAGE_SIZE.height / 2 + radius * Math.cos(angle) - label.naturalHeight / 2);
                 }
 
                 context.restore();
@@ -79,13 +76,13 @@ let VKGeo = (function() {
         let image  = null;
         let label  = null;
 
-        canvas.width           = size.width  * device_pixel_ratio;
-        canvas.height          = size.height * device_pixel_ratio;
+        canvas.width           = IMAGE_SIZE.width  * device_pixel_ratio;
+        canvas.height          = IMAGE_SIZE.height * device_pixel_ratio;
         canvas.className       = "controlPanelImage";
-        canvas.style.width     = size.width  + "px";
-        canvas.style.height    = size.height + "px";
-        canvas.style.minWidth  = size.width  + "px";
-        canvas.style.minHeight = size.height + "px";
+        canvas.style.width     = CONTROL_PANEL_IMAGE_SIZE.width  + "px";
+        canvas.style.height    = CONTROL_PANEL_IMAGE_SIZE.height + "px";
+        canvas.style.minWidth  = CONTROL_PANEL_IMAGE_SIZE.width  + "px";
+        canvas.style.minHeight = CONTROL_PANEL_IMAGE_SIZE.height + "px";
 
         if (img_class === "SHOW_MARKER") {
             canvas.onclick = function() {
@@ -154,14 +151,14 @@ let VKGeo = (function() {
         return canvas;
     }
 
-    function createMarkerImage(marker, update_time, src, size, label_size) {
+    function createMarkerImage(marker, update_time, src) {
         return new ol.style.Icon({
             "img": (function() {
                 function drawIcon() {
-                    if ((image === null || (image.complete && image.naturalWidth > 0)) &&
-                        (label === null || (label.complete && label.naturalWidth > 0))) {
+                    if ((image          &&  image.complete && image.naturalWidth > 0 && image.naturalHeight > 0) &&
+                        (label === null || (label.complete && label.naturalWidth > 0 && label.naturalHeight > 0))) {
                         const angle   = Math.PI / 4;
-                        let   radius  = Math.min(size.width, size.height) / 2;
+                        let   radius  = Math.min(IMAGE_SIZE.width, IMAGE_SIZE.height) / 2;
                         let   context = canvas.getContext("2d");
 
                         context.save();
@@ -171,19 +168,18 @@ let VKGeo = (function() {
                         context.save();
 
                         context.beginPath();
-                        context.arc(size.width / 2, size.height / 2, radius, 0, 2 * Math.PI, false);
+                        context.arc(IMAGE_SIZE.width / 2, IMAGE_SIZE.height / 2, radius, 0, 2 * Math.PI, false);
                         context.clip();
 
                         if (image) {
-                            context.drawImage(image, 0, 0, size.width, size.height);
+                            context.drawImage(image, 0, 0, IMAGE_SIZE.width, IMAGE_SIZE.height);
                         }
 
                         context.restore();
 
                         if (label) {
-                            context.drawImage(label, size.width  / 2 + radius * Math.sin(angle) - label_size.width  / 2,
-                                                     size.height / 2 + radius * Math.cos(angle) - label_size.height / 2, label_size.width,
-                                                                                                                         label_size.height);
+                            context.drawImage(label, IMAGE_SIZE.width  / 2 + radius * Math.sin(angle) - label.naturalWidth  / 2,
+                                                     IMAGE_SIZE.height / 2 + radius * Math.cos(angle) - label.naturalHeight / 2);
                         }
 
                         context.restore();
@@ -196,8 +192,8 @@ let VKGeo = (function() {
                 let image  = null;
                 let label  = null;
 
-                canvas.width  = size.width  * device_pixel_ratio;
-                canvas.height = size.height * device_pixel_ratio;
+                canvas.width  = IMAGE_SIZE.width  * device_pixel_ratio;
+                canvas.height = IMAGE_SIZE.height * device_pixel_ratio;
 
                 image = document.createElement("img");
 
@@ -220,8 +216,9 @@ let VKGeo = (function() {
 
                 return canvas;
             })(),
-            "imgSize": [size.width * device_pixel_ratio, size.height * device_pixel_ratio],
-            "scale":   1.0 / device_pixel_ratio
+            "imgSize": [IMAGE_SIZE.width * device_pixel_ratio, IMAGE_SIZE.height * device_pixel_ratio],
+            "scale":   Math.min(MARKER_IMAGE_SIZE.width  / IMAGE_SIZE.width,
+                                MARKER_IMAGE_SIZE.height / IMAGE_SIZE.height) / device_pixel_ratio
         });
     }
 
@@ -288,7 +285,7 @@ let VKGeo = (function() {
                 control_panel.removeChild(control_panel.lastChild);
             }
 
-            control_panel.appendChild(createControlPanelImage("SHOW_ALL", "", "", 0, "images/button_show_all.png", CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_LABEL_SIZE));
+            control_panel.appendChild(createControlPanelImage("SHOW_ALL", "", "", 0, "images/button_show_all.png"));
 
             let markers = marker_source.getFeatures();
 
@@ -297,7 +294,7 @@ let VKGeo = (function() {
                     let user_id = markers[i].getId();
 
                     if (user_id === "") {
-                        let my_image = createControlPanelImage("SHOW_MARKER", "", "", 0, my_photo_100, CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_LABEL_SIZE);
+                        let my_image = createControlPanelImage("SHOW_MARKER", "", "", 0, my_photo_100);
 
                         if (control_panel.firstChild && control_panel.firstChild.nextSibling) {
                             control_panel.insertBefore(my_image, control_panel.firstChild.nextSibling);
@@ -307,8 +304,7 @@ let VKGeo = (function() {
                     } else if (friends_map[user_id]) {
                         control_panel.appendChild(createControlPanelImage("SHOW_MARKER", user_id, friends_map[user_id].battery_status,
                                                                                                   friends_map[user_id].battery_level,
-                                                                                                  friends_map[user_id].photo_100, CONTROL_PANEL_IMAGE_SIZE,
-                                                                                                                                  CONTROL_PANEL_LABEL_SIZE));
+                                                                                                  friends_map[user_id].photo_100));
 
                         friends_on_map++;
                     }
@@ -489,7 +485,7 @@ let VKGeo = (function() {
                                                             }
 
                                                             frnd_marker.setStyle(new ol.style.Style({
-                                                                "image": createMarkerImage(frnd_marker, friends_map[user_id].update_time, friends_map[user_id].photo_100, MARKER_IMAGE_SIZE, MARKER_LABEL_SIZE)
+                                                                "image": createMarkerImage(frnd_marker, friends_map[user_id].update_time, friends_map[user_id].photo_100)
                                                             }));
 
                                                             frnd_marker.set("firstName",  friends_map[user_id].first_name);
@@ -569,7 +565,7 @@ let VKGeo = (function() {
         });
     }
 
-    let device_pixel_ratio = window.devicePixelRatio > MIN_DEVICE_PIXEL_RATIO ? window.devicePixelRatio : MIN_DEVICE_PIXEL_RATIO;
+    let device_pixel_ratio = window.devicePixelRatio > 1.0 ? window.devicePixelRatio : 1.0;
     let map_was_touched    = false;
     let my_photo_100       = DEFAULT_PHOTO_100_URL;
     let my_marker          = null;
@@ -697,7 +693,7 @@ let VKGeo = (function() {
                                             my_marker.setId("");
 
                                             my_marker.setStyle(new ol.style.Style({
-                                                "image": createMarkerImage(my_marker, (new Date()).getTime() / 1000, my_photo_100, MARKER_IMAGE_SIZE, MARKER_LABEL_SIZE)
+                                                "image": createMarkerImage(my_marker, (new Date()).getTime() / 1000, my_photo_100)
                                             }));
 
                                             marker_source.addFeature(my_marker);
@@ -722,7 +718,7 @@ let VKGeo = (function() {
                                             }
 
                                             let control_panel = document.getElementById("controlPanel");
-                                            let my_image      = createControlPanelImage("SHOW_MARKER", "", "", 0, my_photo_100, CONTROL_PANEL_IMAGE_SIZE, CONTROL_PANEL_LABEL_SIZE);
+                                            let my_image      = createControlPanelImage("SHOW_MARKER", "", "", 0, my_photo_100);
 
                                             if (control_panel.firstChild && control_panel.firstChild.nextSibling) {
                                                 control_panel.insertBefore(my_image, control_panel.firstChild.nextSibling);
