@@ -51,7 +51,7 @@ let VKGeo = (function() {
 
                 context.save();
 
-                context.scale(pixel_ratio, pixel_ratio);
+                context.scale(device_pixel_ratio, device_pixel_ratio);
 
                 context.save();
 
@@ -75,14 +75,12 @@ let VKGeo = (function() {
             }
         }
 
-        let pixel_ratio = window.devicePixelRatio > MIN_DEVICE_PIXEL_RATIO ? window.devicePixelRatio : MIN_DEVICE_PIXEL_RATIO;
-
         let canvas = document.createElement("canvas");
         let image  = null;
         let label  = null;
 
-        canvas.width           = size.width  * pixel_ratio;
-        canvas.height          = size.height * pixel_ratio;
+        canvas.width           = size.width  * device_pixel_ratio;
+        canvas.height          = size.height * device_pixel_ratio;
         canvas.className       = "controlPanelImage";
         canvas.style.width     = size.width  + "px";
         canvas.style.height    = size.height + "px";
@@ -168,6 +166,10 @@ let VKGeo = (function() {
 
                         context.save();
 
+                        context.scale(device_pixel_ratio, device_pixel_ratio);
+
+                        context.save();
+
                         context.beginPath();
                         context.arc(size.width / 2, size.height / 2, radius, 0, 2 * Math.PI, false);
                         context.clip();
@@ -184,6 +186,8 @@ let VKGeo = (function() {
                                                                                                                          label_size.height);
                         }
 
+                        context.restore();
+
                         marker.changed();
                     }
                 }
@@ -192,8 +196,8 @@ let VKGeo = (function() {
                 let image  = null;
                 let label  = null;
 
-                canvas.width  = size.width;
-                canvas.height = size.height;
+                canvas.width  = size.width  * device_pixel_ratio;
+                canvas.height = size.height * device_pixel_ratio;
 
                 image = document.createElement("img");
 
@@ -216,7 +220,8 @@ let VKGeo = (function() {
 
                 return canvas;
             })(),
-            "imgSize": [size.width, size.height]
+            "imgSize": [size.width * device_pixel_ratio, size.height * device_pixel_ratio],
+            "scale":   1.0 / device_pixel_ratio
         });
     }
 
@@ -564,11 +569,12 @@ let VKGeo = (function() {
         });
     }
 
-    let map_was_touched  = false;
-    let my_photo_100     = DEFAULT_PHOTO_100_URL;
-    let my_marker        = null;
-    let tracked_marker   = null;
-    let vk_request_queue = [];
+    let device_pixel_ratio = window.devicePixelRatio > MIN_DEVICE_PIXEL_RATIO ? window.devicePixelRatio : MIN_DEVICE_PIXEL_RATIO;
+    let map_was_touched    = false;
+    let my_photo_100       = DEFAULT_PHOTO_100_URL;
+    let my_marker          = null;
+    let tracked_marker     = null;
+    let vk_request_queue   = [];
 
     let marker_source = new ol.source.Vector({
         "features": []
