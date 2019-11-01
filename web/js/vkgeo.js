@@ -565,7 +565,7 @@ let VKGeo = (function() {
         });
     }
 
-    let device_pixel_ratio = window.devicePixelRatio > 1.0 ? window.devicePixelRatio : 1.0;
+    let device_pixel_ratio = window.devicePixelRatio ? window.devicePixelRatio : 1.0;
     let map_was_touched    = false;
     let my_photo_100       = DEFAULT_PHOTO_100_URL;
     let my_marker          = null;
