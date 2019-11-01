@@ -3,6 +3,7 @@ let VKGeo = (function() {
 
     const UPDATE_INTERVAL          = 60000;
     const DATA_TIMEOUT             = 24 * 60 * 60;
+    const MIN_DEVICE_PIXEL_RATIO   = 2.0;
     const MARKER_IMAGE_SIZE        = {"width": 48, "height": 48};
     const MARKER_LABEL_SIZE        = {"width": 12, "height": 12};
     const CONTROL_PANEL_IMAGE_SIZE = {"width": 64, "height": 64};
@@ -50,6 +51,10 @@ let VKGeo = (function() {
 
                 context.save();
 
+                context.scale(pixel_ratio, pixel_ratio);
+
+                context.save();
+
                 context.beginPath();
                 context.arc(size.width / 2, size.height / 2, radius, 0, 2 * Math.PI, false);
                 context.clip();
@@ -65,16 +70,22 @@ let VKGeo = (function() {
                                              size.height / 2 + radius * Math.cos(angle) - label_size.height / 2, label_size.width,
                                                                                                                  label_size.height);
                 }
+
+                context.restore();
             }
         }
+
+        let pixel_ratio = window.devicePixelRatio > MIN_DEVICE_PIXEL_RATIO ? window.devicePixelRatio : MIN_DEVICE_PIXEL_RATIO;
 
         let canvas = document.createElement("canvas");
         let image  = null;
         let label  = null;
 
-        canvas.width           = size.width;
-        canvas.height          = size.height;
+        canvas.width           = size.width  * pixel_ratio;
+        canvas.height          = size.height * pixel_ratio;
         canvas.className       = "controlPanelImage";
+        canvas.style.width     = size.width  + "px";
+        canvas.style.height    = size.height + "px";
         canvas.style.minWidth  = size.width  + "px";
         canvas.style.minHeight = size.height + "px";
 
