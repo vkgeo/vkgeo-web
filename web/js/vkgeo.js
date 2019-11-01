@@ -563,6 +563,10 @@ let VKGeo = (function() {
         "features": []
     });
 
+    let marker_layer = new ol.layer.Vector({
+        "source": marker_source
+    });
+
     let map = new ol.Map({
         "target": "map",
         "layers": [
@@ -572,9 +576,7 @@ let VKGeo = (function() {
                     "attributions": "&#169; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors."
                 })
             }),
-            new ol.layer.Vector({
-                "source": marker_source
-            })
+            marker_layer
         ],
         "overlays": [
             new ol.Overlay({
@@ -596,30 +598,34 @@ let VKGeo = (function() {
     });
 
     map.on("singleclick", function(event) {
-        map.forEachFeatureAtPixel(event.pixel, function(feature, layer) {
-            if (feature.getId()) {
-                window.open("https://vk.com/id" + feature.getId());
+        marker_layer.getFeatures(event.pixel).then(function(features) {
+            if (features && features.length > 0) {
+                let feature = features[0];
+
+                if (feature.getId()) {
+                    window.open("https://vk.com/id" + feature.getId());
+                }
             }
         });
     });
 
     map.on("pointermove", function(event) {
-        let feature = map.forEachFeatureAtPixel(event.pixel, function(feature, layer) {
-            return feature;
+        marker_layer.getFeatures(event.pixel).then(function(features) {
+            if (features && features.length > 0) {
+                let feature = features[0];
+
+                map.getOverlayById("markerTooltip").setPosition(event.coordinate);
+
+                document.getElementById("markerTooltipNameText").innerHTML       = escapeHtml(_("{0} {1}", feature.get("firstName"),
+                                                                                                           feature.get("lastName")));
+                document.getElementById("markerTooltipUpdateTimeText").innerHTML = escapeHtml(_("{0}",     (new Date(feature.get("updateTime") * 1000))
+                                                                                                                .toLocaleString()));
+
+                document.getElementById("markerTooltip").style.display = "flex";
+            } else {
+                document.getElementById("markerTooltip").style.display = "none";
+            }
         });
-
-        if (feature) {
-            map.getOverlayById("markerTooltip").setPosition(event.coordinate);
-
-            document.getElementById("markerTooltipNameText").innerHTML       = escapeHtml(_("{0} {1}", feature.get("firstName"),
-                                                                                                       feature.get("lastName")));
-            document.getElementById("markerTooltipUpdateTimeText").innerHTML = escapeHtml(_("{0}",     (new Date(feature.get("updateTime") * 1000))
-                                                                                                            .toLocaleString()));
-
-            document.getElementById("markerTooltip").style.display = "flex";
-        } else {
-            document.getElementById("markerTooltip").style.display = "none";
-        }
     });
 
     map.on("dblclick", function(event) {
