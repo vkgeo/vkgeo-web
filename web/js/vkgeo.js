@@ -620,7 +620,7 @@ let VKGeo = (function() {
                 let feature = features[0];
 
                 if (feature.getId()) {
-                    window.open("https://vk.com/id" + feature.getId());
+                    window.open("https://vk.com/id" + feature.getId(), "_blank", "noopener");
                 }
             }
         });
