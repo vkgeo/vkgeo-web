@@ -353,12 +353,16 @@ let VKGeo = (function() {
                 });
             }).then(function(data) {
                 if (data.response) {
-                    friends_list = friends_list.concat(data.response.items);
+                    if (Array.isArray(data.response.items)) {
+                        friends_list = friends_list.concat(data.response.items);
 
-                    if (data.response.items.length > 0 && offset + data.response.items.length < data.response.count) {
-                        return getFriends(offset + data.response.items.length);
+                        if (data.response.items.length > 0 && offset + data.response.items.length < data.response.count) {
+                            return getFriends(offset + data.response.items.length);
+                        } else {
+                            return Promise.resolve();
+                        }
                     } else {
-                        return Promise.resolve();
+                        throw new Error("invalid response to friends.get request : " + JSON.stringify(data.response));
                     }
                 } else {
                     if (data.error) {
@@ -448,9 +452,9 @@ let VKGeo = (function() {
 
             for (let data of data_list) {
                 if (data.response) {
-                    if (data.response.length > 0) {
+                    if (Array.isArray(data.response)) {
                         for (let user_notes_list of data.response) {
-                            if (user_notes_list.length > 0) {
+                            if (Array.isArray(user_notes_list)) {
                                 for (let item of user_notes_list) {
                                     if (item && item.title === DATA_NOTE_TITLE) {
                                         notes_list.push(item);
@@ -458,8 +462,12 @@ let VKGeo = (function() {
                                         break;
                                     }
                                 }
+                            } else {
+                                console.warn("runPeriodicUpdate() : invalid response to notes.get request : " + JSON.stringify(user_notes_list));
                             }
                         }
+                    } else {
+                        console.warn("runPeriodicUpdate() : invalid response to execute(notes.get) request : " + JSON.stringify(data.response));
                     }
                 } else {
                     if (data.error) {
@@ -487,7 +495,7 @@ let VKGeo = (function() {
                             try {
                                 user_data = JSON.parse(atob(regexp_result[1]));
                             } catch (ex) {
-                                console.warn("runPeriodicUpdate() : invalid user data : " + JSON.stringify(regexp_result));
+                                console.warn("runPeriodicUpdate() : invalid user data : " + item.text);
                             }
 
                             if (user_data && typeof user_data.update_time === "number" && isFinite(user_data.update_time) &&
@@ -528,7 +536,7 @@ let VKGeo = (function() {
                                 updated_friends[user_id] = true;
                             }
                         } else {
-                            console.warn("runPeriodicUpdate() : invalid user data : " + JSON.stringify(regexp_result));
+                            console.warn("runPeriodicUpdate() : invalid user data : " + item.text);
                         }
                     }
                 } else {
@@ -676,7 +684,7 @@ let VKGeo = (function() {
                             }, function(data) {
                                 if (my_marker === null) {
                                     if (data.response) {
-                                        if (data.response.length === 1 && data.response[0]) {
+                                        if (Array.isArray(data.response) && data.response.length === 1) {
                                             if (typeof data.response[0].photo_100 === "string") {
                                                 my_photo_100 = data.response[0].photo_100;
                                             } else {
