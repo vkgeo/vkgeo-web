@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-05-23 20:28+0300\n"
+"POT-Creation-Date: 2020-03-01 21:04+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,15 +17,15 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../web/index.html:81
+#: ../web/index.html:83
 msgid "Please update your browser to start using this app."
 msgstr ""
 
-#: ../web/js/vkgeo.js:720
+#: ../web/js/vkgeo.js:764
 msgid "Settings"
 msgstr ""
 
-#: ../web/js/vkgeo.js:231
+#: ../web/js/vkgeo.js:270
 msgid ""
 "This app is a web companion for VKGeo Friends on Map mobile application. <a "
 "href=\"https://vkgeo.sourceforge.io\" target=\"_blank\" rel=\"noopener"
@@ -33,20 +33,20 @@ msgid ""
 "can see each other on the map."
 msgstr ""
 
-#: ../web/js/vkgeo.js:753 ../web/js/vkgeo.js:756
+#: ../web/js/vkgeo.js:799 ../web/js/vkgeo.js:802
 msgid "VK initialization failed."
 msgstr ""
 
-#: ../web/js/vkgeo.js:719
+#: ../web/js/vkgeo.js:763
 msgid ""
 "You should allow access to friends and notes to view location of your "
 "friends on the map."
 msgstr ""
 
-#: ../web/js/vkgeo.js:601
+#: ../web/js/vkgeo.js:639
 msgid "{0}"
 msgstr ""
 
-#: ../web/js/vkgeo.js:599
+#: ../web/js/vkgeo.js:637
 msgid "{0} {1}"
 msgstr ""
