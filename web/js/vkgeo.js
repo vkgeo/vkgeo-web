@@ -678,10 +678,14 @@ let VKGeo = (function() {
                 if (navigator.geolocation) {
                     navigator.geolocation.watchPosition(function(position) {
                         if (my_marker === null) {
-                            enqueueVKApiRequest("users.get", {
-                                "fields": "photo_100",
-                                "v":      VK_API_V
-                            }, function(data) {
+                            new Promise(function(resolve) {
+                                enqueueVKApiRequest("users.get", {
+                                    "fields": "photo_100",
+                                    "v":      VK_API_V
+                                }, function(data) {
+                                    resolve(data);
+                                });
+                            }).then(function(data) {
                                 if (my_marker === null) {
                                     if (data.response) {
                                         if (Array.isArray(data.response) && data.response.length === 1) {
@@ -731,13 +735,13 @@ let VKGeo = (function() {
                                                 control_panel.appendChild(my_image);
                                             }
                                         } else {
-                                            console.warn("init() : invalid response to users.get request : " + JSON.stringify(data.response));
+                                            throw new Error("invalid response to users.get request : " + JSON.stringify(data.response));
                                         }
                                     } else {
                                         if (data.error) {
-                                            console.error("init() : users.get request failed : " + data.error.error_msg);
+                                            throw new Error("users.get request failed : " + data.error.error_msg);
                                         } else {
-                                            console.error("init() : users.get request failed : " + JSON.stringify(data));
+                                            throw new Error("users.get request failed : " + JSON.stringify(data));
                                         }
                                     }
                                 }
