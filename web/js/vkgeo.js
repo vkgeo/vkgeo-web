@@ -249,9 +249,9 @@ let VKGeo = (function() {
         if (markers && markers.length > 0) {
             let extent = markers[0].getGeometry().getExtent();
 
-            markers.forEach(function(item) {
+            for (let item of markers) {
                 ol.extent.extend(extent, item.getGeometry().getExtent());
-            });
+            }
 
             map.getView().fit(extent, {
                 "padding": [MAP_PADDING,
@@ -290,7 +290,7 @@ let VKGeo = (function() {
             let markers = marker_source.getFeatures();
 
             if (markers) {
-                markers.forEach(function(item) {
+                for (let item of markers) {
                     let user_id = item.getId();
 
                     if (user_id === "") {
@@ -308,7 +308,7 @@ let VKGeo = (function() {
 
                         friends_on_map++;
                     }
-                });
+                }
             }
 
             return (friends_on_map > 0);
@@ -320,19 +320,19 @@ let VKGeo = (function() {
             if (markers) {
                 let markers_to_remove = [];
 
-                markers.forEach(function(item) {
+                for (let item of markers) {
                     if (item.getId() !== "" && !updated_friends[item.getId()]) {
                         markers_to_remove.push(item);
                     }
-                });
+                }
 
-                markers_to_remove.forEach(function(item) {
+                for (let item of markers_to_remove) {
                     if (tracked_marker === item) {
                         tracked_marker = null;
                     }
 
                     marker_source.removeFeature(item);
-                });
+                }
             }
 
             if (tracked_marker !== null) {
@@ -384,7 +384,7 @@ let VKGeo = (function() {
             try {
                 let accessible_frnd_ids = [];
 
-                friends_list.forEach(function(item) {
+                for (let item of friends_list) {
                     if (item && typeof item.id === "number" && isFinite(item.id)) {
                         if (!item.deactivated) {
                             let user_id = item.id.toString();
@@ -420,7 +420,7 @@ let VKGeo = (function() {
                     } else {
                         console.warn("runPeriodicUpdate() : invalid friend entry");
                     }
-                });
+                }
 
                 if (accessible_frnd_ids.length > 0) {
                     let notes_req_list = [];
@@ -461,10 +461,10 @@ let VKGeo = (function() {
             try {
                 let notes_list = [];
 
-                data_list.forEach(function(data) {
+                for (let data of data_list) {
                     if (data.response) {
                         if (data.response.length > 0) {
-                            data.response.forEach(function(user_notes_list) {
+                            for (let user_notes_list of data.response) {
                                 if (user_notes_list.length > 0) {
                                     for (let item of user_notes_list) {
                                         if (item && item.title === DATA_NOTE_TITLE) {
@@ -474,7 +474,7 @@ let VKGeo = (function() {
                                         }
                                     }
                                 }
-                            });
+                            }
                         }
                     } else {
                         if (data.error) {
@@ -485,11 +485,11 @@ let VKGeo = (function() {
 
                         return Promise.reject();
                     }
-                });
+                }
 
                 let updated_friends = {};
 
-                notes_list.forEach(function(item) {
+                for (let item of notes_list) {
                     if (item && typeof item.text     === "string" &&
                                 typeof item.owner_id === "number" && isFinite(item.owner_id)) {
                         let user_id = item.owner_id.toString();
@@ -551,7 +551,7 @@ let VKGeo = (function() {
                     } else {
                         console.warn("runPeriodicUpdate() : invalid note entry");
                     }
-                });
+                }
 
                 cleanupMarkers(updated_friends);
 
