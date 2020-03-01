@@ -70,7 +70,7 @@
 
             function loadAppScript() {
                 try {
-                    eval("const c = 1; let v = (x) => x + c;");
+                    eval("const c = 1; let v = (x) => x + c; for (let i of []) {}");
                     eval("let p = new Promise(function(rs, rj) {}).then(function(v) {});");
                     eval("let l = (new URL(document.location)).searchParams.get(\"language\");");
 
