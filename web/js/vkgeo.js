@@ -364,12 +364,10 @@ let VKGeo = (function() {
                     } else {
                         throw new Error("invalid response to friends.get request : " + JSON.stringify(data.response));
                     }
+                } else if (data.error) {
+                    throw new Error("friends.get request failed : " + data.error.error_msg);
                 } else {
-                    if (data.error) {
-                        throw new Error("friends.get request failed : " + data.error.error_msg);
-                    } else {
-                        throw new Error("friends.get request failed : " + JSON.stringify(data));
-                    }
+                    throw new Error("friends.get request failed : " + JSON.stringify(data));
                 }
             });
         }
@@ -469,12 +467,10 @@ let VKGeo = (function() {
                     } else {
                         console.warn("runPeriodicUpdate() : invalid response to execute(notes.get) request : " + JSON.stringify(data.response));
                     }
+                } else if (data.error) {
+                    throw new Error("execute(notes.get) request failed : " + data.error.error_msg);
                 } else {
-                    if (data.error) {
-                        throw new Error("execute(notes.get) request failed : " + data.error.error_msg);
-                    } else {
-                        throw new Error("execute(notes.get) request failed : " + JSON.stringify(data));
-                    }
+                    throw new Error("execute(notes.get) request failed : " + JSON.stringify(data));
                 }
             }
 
@@ -737,12 +733,10 @@ let VKGeo = (function() {
                                         } else {
                                             throw new Error("invalid response to users.get request : " + JSON.stringify(data.response));
                                         }
+                                    } else if (data.error) {
+                                        throw new Error("users.get request failed : " + data.error.error_msg);
                                     } else {
-                                        if (data.error) {
-                                            throw new Error("users.get request failed : " + data.error.error_msg);
-                                        } else {
-                                            throw new Error("users.get request failed : " + JSON.stringify(data));
-                                        }
+                                        throw new Error("users.get request failed : " + JSON.stringify(data));
                                     }
                                 }
                             });
