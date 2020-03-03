@@ -358,8 +358,6 @@ let VKGeo = (function() {
 
                         if (data.response.items.length > 0 && offset + data.response.items.length < data.response.count) {
                             return getFriends(offset + data.response.items.length);
-                        } else {
-                            return;
                         }
                     } else {
                         throw new Error("invalid response to friends.get request : " + JSON.stringify(data.response));
