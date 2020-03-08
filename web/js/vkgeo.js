@@ -342,7 +342,7 @@ let VKGeo = (function() {
             }
         }
 
-        function getFriends(offset) {
+        function fetchFriends(offset) {
             return new Promise(function(resolve) {
                 enqueueVKApiRequest("friends.get", {
                     "fields": "photo_100",
@@ -357,7 +357,7 @@ let VKGeo = (function() {
                         friends_list = friends_list.concat(data.response.items);
 
                         if (data.response.items.length > 0 && offset + data.response.items.length < data.response.count) {
-                            return getFriends(offset + data.response.items.length);
+                            return fetchFriends(offset + data.response.items.length);
                         }
                     } else {
                         throw new Error("invalid response to friends.get request : " + JSON.stringify(data.response));
@@ -372,7 +372,7 @@ let VKGeo = (function() {
 
         let friends_map = {};
 
-        getFriends(0).then(function() {
+        fetchFriends(0).then(function() {
             let accessible_frnd_ids = [];
 
             for (let item of friends_list) {
