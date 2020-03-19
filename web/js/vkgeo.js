@@ -585,7 +585,7 @@ let VKGeo = (function() {
             new ol.layer.Tile({
                 "source": new ol.source.OSM({
                     "crossOrigin":  null,
-                    "attributions": "&#169; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors."
+                    "attributions": _("&#169; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" rel=\"noopener\">OpenStreetMap</a> contributors.")
                 })
             }),
             marker_layer
