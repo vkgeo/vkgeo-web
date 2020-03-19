@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-01 21:04+0300\n"
+"POT-Creation-Date: 2020-03-20 02:46+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,17 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ../web/js/vkgeo.js:588
+msgid ""
+"&#169; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" "
+"rel=\"noopener\">OpenStreetMap</a> contributors."
+msgstr ""
+
 #: ../web/index.html:83
 msgid "Please update your browser to start using this app."
 msgstr ""
 
-#: ../web/js/vkgeo.js:764
+#: ../web/js/vkgeo.js:760
 msgid "Settings"
 msgstr ""
 
@@ -33,20 +39,20 @@ msgid ""
 "can see each other on the map."
 msgstr ""
 
-#: ../web/js/vkgeo.js:799 ../web/js/vkgeo.js:802
+#: ../web/js/vkgeo.js:795 ../web/js/vkgeo.js:798
 msgid "VK initialization failed."
 msgstr ""
 
-#: ../web/js/vkgeo.js:763
+#: ../web/js/vkgeo.js:759
 msgid ""
 "You should allow access to friends and notes to view location of your "
 "friends on the map."
 msgstr ""
 
-#: ../web/js/vkgeo.js:639
+#: ../web/js/vkgeo.js:633
 msgid "{0}"
 msgstr ""
 
-#: ../web/js/vkgeo.js:637
+#: ../web/js/vkgeo.js:631
 msgid "{0} {1}"
 msgstr ""
