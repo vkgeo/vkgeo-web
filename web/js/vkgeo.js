@@ -409,7 +409,7 @@ let VKGeo = (function() {
                         }
                     }
                 } else {
-                    console.warn("runPeriodicUpdate() : invalid friend entry : " + JSON.stringify(item));
+                    console.warn("runPeriodicUpdate() : invalid friend entry : %o", item);
                 }
             }
 
@@ -459,11 +459,11 @@ let VKGeo = (function() {
                                     }
                                 }
                             } else {
-                                console.warn("runPeriodicUpdate() : invalid response to notes.get request : " + JSON.stringify(user_notes_list));
+                                console.warn("runPeriodicUpdate() : invalid response to notes.get request : %o", user_notes_list);
                             }
                         }
                     } else {
-                        console.warn("runPeriodicUpdate() : invalid response to execute(notes.get) request : " + JSON.stringify(data.response));
+                        console.warn("runPeriodicUpdate() : invalid response to execute(notes.get) request : %o", data.response);
                     }
                 } else if (data.error) {
                     throw new Error("execute(notes.get) request failed : " + data.error.error_msg);
@@ -489,7 +489,7 @@ let VKGeo = (function() {
                             try {
                                 user_data = JSON.parse(atob(regexp_result[1]));
                             } catch (ex) {
-                                console.warn("runPeriodicUpdate() : invalid user data : " + item.text);
+                                console.warn("runPeriodicUpdate() : invalid user data : %s", item.text);
                             }
 
                             if (user_data && typeof user_data.update_time === "number" && isFinite(user_data.update_time) &&
@@ -530,11 +530,11 @@ let VKGeo = (function() {
                                 updated_friends[user_id] = true;
                             }
                         } else {
-                            console.warn("runPeriodicUpdate() : invalid user data : " + item.text);
+                            console.warn("runPeriodicUpdate() : invalid user data : %s", item.text);
                         }
                     }
                 } else {
-                    console.warn("runPeriodicUpdate() : invalid note entry : " + JSON.stringify(item));
+                    console.warn("runPeriodicUpdate() : invalid note entry : %o", item);
                 }
             }
 
