@@ -45,23 +45,6 @@
                 return div.innerHTML;
             }
 
-            function getUrlParameter(name) {
-                name = name.replace(/[\[\]]/g, "\\$&");
-
-                var regex   = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
-                var results = regex.exec(window.location.href);
-
-                if (results) {
-                    if (results[2]) {
-                        return decodeURIComponent(results[2].replace(/\+/g, " "));
-                    } else {
-                        return "";
-                    }
-                } else {
-                    return null;
-                }
-            }
-
             function displayFatalError(error_text) {
                 document.getElementById("fatalErrorPanelText").innerHTML = escapeHtml(error_text);
 
@@ -85,34 +68,38 @@
             }
 
             document.addEventListener("DOMContentLoaded", function() {
-                var language = getUrlParameter("language");
+                var language = null;
 
-                if (language !== null) {
-                    var lng_value  = parseInt(language, 10);
-                    var lng_script = document.createElement("script");
+                try {
+                    language = (new URL(document.location)).searchParams.get("language");
+                } finally {
+                    if (language !== null) {
+                        var lng_value  = parseInt(language, 10);
+                        var lng_script = document.createElement("script");
 
-                    if (
-                        lng_value === 0   || // Russian
-                        lng_value === 1   || // Ukrainian
-                        lng_value === 2   || // Belarusian (Tarashkevitsa)
-                        lng_value === 114 || // Belarusian
-                        lng_value === 57  || // Azerbaijani
-                        lng_value === 62  || // Turkmen
-                        lng_value === 65  || // Uzbek
-                        lng_value === 66  || // Moldavanian
-                        lng_value === 70  || // Tajik
-                        lng_value === 87  || // Kirgiz
-                        lng_value === 97     // Kazakh
-                    ) {
-                        lng_script.src    = "translations/vkgeo_ru.js";
-                        lng_script.onload = loadAppScript;
+                        if (
+                            lng_value === 0   || // Russian
+                            lng_value === 1   || // Ukrainian
+                            lng_value === 2   || // Belarusian (Tarashkevitsa)
+                            lng_value === 114 || // Belarusian
+                            lng_value === 57  || // Azerbaijani
+                            lng_value === 62  || // Turkmen
+                            lng_value === 65  || // Uzbek
+                            lng_value === 66  || // Moldavanian
+                            lng_value === 70  || // Tajik
+                            lng_value === 87  || // Kirgiz
+                            lng_value === 97     // Kazakh
+                        ) {
+                            lng_script.src    = "translations/vkgeo_ru.js";
+                            lng_script.onload = loadAppScript;
 
-                        document.getElementsByTagName("head")[0].appendChild(lng_script);
+                            document.getElementsByTagName("head")[0].appendChild(lng_script);
+                        } else {
+                            loadAppScript();
+                        }
                     } else {
                         loadAppScript();
                     }
-                } else {
-                    loadAppScript();
                 }
             });
         </script>
