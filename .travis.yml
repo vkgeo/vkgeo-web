@@ -20,7 +20,7 @@ script:
         echo && \
         echo "-------------- SONAR SCANNER --------------" && \
         echo && \
-        sonar-scanner -Dsonar.projectKey=vkgeo:vkgeo-web \
+        sonar-scanner -Dsonar.projectKey=vkgeo_vkgeo-web \
                       -Dsonar.projectName="VKGeo Web" \
                       -Dsonar.sources=. \
                       -Dsonar.sourceEncoding=UTF-8; \
