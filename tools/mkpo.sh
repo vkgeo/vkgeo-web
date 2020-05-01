@@ -2,10 +2,10 @@
 
 PATH=/bin:/usr/bin; export PATH
 
-xgettext --keyword=_ --language=JavaScript --add-comments --sort-output -o ../translations/vkgeo.pot ../web/index.html ../web/js/vkgeo.js
+xgettext --keyword=_ --language=JavaScript --add-comments --sort-output -o ../translations/vk_iframe_app.pot ../vk_iframe_app/index.html ../vk_iframe_app/js/vkgeo.js
 
-if [ -f ../translations/vkgeo_ru.po ]; then
-    msgmerge --update --backup=off ../translations/vkgeo_ru.po ../translations/vkgeo.pot
+if [ -f ../translations/vk_iframe_app_ru.po ]; then
+    msgmerge --update --backup=off ../translations/vk_iframe_app_ru.po ../translations/vk_iframe_app.pot
 else
-    msginit --locale=ru --no-translator --input=../translations/vkgeo.pot --output=../translations/vkgeo_ru.po
+    msginit --locale=ru --no-translator --input=../translations/vk_iframe_app.pot --output=../translations/vk_iframe_app_ru.po
 fi

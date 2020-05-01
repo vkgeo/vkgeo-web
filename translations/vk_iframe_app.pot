@@ -17,21 +17,21 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../web/js/vkgeo.js:588
+#: ../vk_iframe_app/js/vkgeo.js:588
 msgid ""
 "&#169; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" "
 "rel=\"noopener\">OpenStreetMap</a> contributors."
 msgstr ""
 
-#: ../web/index.html:83
+#: ../vk_iframe_app/index.html:83
 msgid "Please update your browser to start using this app."
 msgstr ""
 
-#: ../web/js/vkgeo.js:760
+#: ../vk_iframe_app/js/vkgeo.js:760
 msgid "Settings"
 msgstr ""
 
-#: ../web/js/vkgeo.js:270
+#: ../vk_iframe_app/js/vkgeo.js:270
 msgid ""
 "This app is a web companion for VKGeo Friends on Map mobile application. <a "
 "href=\"https://vkgeo.sourceforge.io\" target=\"_blank\" rel=\"noopener"
@@ -39,20 +39,20 @@ msgid ""
 "can see each other on the map."
 msgstr ""
 
-#: ../web/js/vkgeo.js:795 ../web/js/vkgeo.js:798
+#: ../vk_iframe_app/js/vkgeo.js:795 ../vk_iframe_app/js/vkgeo.js:798
 msgid "VK initialization failed."
 msgstr ""
 
-#: ../web/js/vkgeo.js:759
+#: ../vk_iframe_app/js/vkgeo.js:759
 msgid ""
 "You should allow access to friends and notes to view location of your "
 "friends on the map."
 msgstr ""
 
-#: ../web/js/vkgeo.js:633
+#: ../vk_iframe_app/js/vkgeo.js:633
 msgid "{0}"
 msgstr ""
 
-#: ../web/js/vkgeo.js:631
+#: ../vk_iframe_app/js/vkgeo.js:631
 msgid "{0} {1}"
 msgstr ""

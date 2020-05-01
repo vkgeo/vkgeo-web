@@ -19,7 +19,7 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Poedit 2.0.8\n"
 
-#: ../web/js/vkgeo.js:588
+#: ../vk_iframe_app/js/vkgeo.js:588
 msgid ""
 "&#169; <a href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\" "
 "rel=\"noopener\">OpenStreetMap</a> contributors."
@@ -27,16 +27,16 @@ msgstr ""
 "&#169; Участники проекта <a href=\"https://www.openstreetmap.org/copyright\" "
 "target=\"_blank\" rel=\"noopener\">OpenStreetMap</a>."
 
-#: ../web/index.html:83
+#: ../vk_iframe_app/index.html:83
 msgid "Please update your browser to start using this app."
 msgstr ""
 "Пожалуйста, обновите ваш браузер, чтобы начать использовать это приложение."
 
-#: ../web/js/vkgeo.js:760
+#: ../vk_iframe_app/js/vkgeo.js:760
 msgid "Settings"
 msgstr "Настройки"
 
-#: ../web/js/vkgeo.js:270
+#: ../vk_iframe_app/js/vkgeo.js:270
 msgid ""
 "This app is a web companion for VKGeo Friends on Map mobile application. <a "
 "href=\"https://vkgeo.sourceforge.io\" target=\"_blank\" rel=\"noopener"
@@ -48,11 +48,11 @@ msgstr ""
 "\">Установите VKGeo на ваш мобильный</a> и пригласите друзей, чтобы вы с "
 "ними могли видеть друг друга на карте."
 
-#: ../web/js/vkgeo.js:795 ../web/js/vkgeo.js:798
+#: ../vk_iframe_app/js/vkgeo.js:795 ../vk_iframe_app/js/vkgeo.js:798
 msgid "VK initialization failed."
 msgstr "Не удалось выполнить инициализацию ВК."
 
-#: ../web/js/vkgeo.js:759
+#: ../vk_iframe_app/js/vkgeo.js:759
 msgid ""
 "You should allow access to friends and notes to view location of your "
 "friends on the map."
@@ -60,10 +60,10 @@ msgstr ""
 "Вы должны разрешить доступ к друзьям и заметкам для просмотра местоположения "
 "ваших друзей на карте."
 
-#: ../web/js/vkgeo.js:633
+#: ../vk_iframe_app/js/vkgeo.js:633
 msgid "{0}"
 msgstr "{0}"
 
-#: ../web/js/vkgeo.js:631
+#: ../vk_iframe_app/js/vkgeo.js:631
 msgid "{0} {1}"
 msgstr "{0} {1}"
