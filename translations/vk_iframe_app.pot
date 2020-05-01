@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-20 02:52+0300\n"
+"POT-Creation-Date: 2020-05-01 04:10+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,7 +23,7 @@ msgid ""
 "rel=\"noopener\">OpenStreetMap</a> contributors."
 msgstr ""
 
-#: ../vk_iframe_app/index.html:83
+#: ../vk_iframe_app/index.html:66
 msgid "Please update your browser to start using this app."
 msgstr ""
 

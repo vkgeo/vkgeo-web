@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-03-20 02:46+0300\n"
+"POT-Creation-Date: 2020-05-01 04:10+0300\n"
 "PO-Revision-Date: 2020-03-20 02:51+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -27,7 +27,7 @@ msgstr ""
 "&#169; Участники проекта <a href=\"https://www.openstreetmap.org/copyright\" "
 "target=\"_blank\" rel=\"noopener\">OpenStreetMap</a>."
 
-#: ../vk_iframe_app/index.html:83
+#: ../vk_iframe_app/index.html:66
 msgid "Please update your browser to start using this app."
 msgstr ""
 "Пожалуйста, обновите ваш браузер, чтобы начать использовать это приложение."
