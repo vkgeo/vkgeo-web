@@ -683,6 +683,8 @@ let VKGeo = (function() {
                                 if (my_marker === null) {
                                     if (data.response) {
                                         if (Array.isArray(data.response) && data.response.length === 1) {
+                                            let current_time = (new Date()).getTime() / 1000;
+
                                             if (typeof data.response[0].photo_100 === "string") {
                                                 my_photo_100 = data.response[0].photo_100;
                                             } else {
@@ -696,7 +698,7 @@ let VKGeo = (function() {
                                             my_marker.setId("");
 
                                             my_marker.setStyle(new ol.style.Style({
-                                                "image": createMarkerImage(my_marker, (new Date()).getTime() / 1000, my_photo_100)
+                                                "image": createMarkerImage(my_marker, current_time, my_photo_100)
                                             }));
 
                                             marker_source.addFeature(my_marker);
@@ -712,7 +714,7 @@ let VKGeo = (function() {
                                                 my_marker.set("lastName", "");
                                             }
 
-                                            my_marker.set("updateTime", (new Date()).getTime() / 1000);
+                                            my_marker.set("updateTime", current_time);
 
                                             if (tracked_marker !== null) {
                                                 centerOnTrackedMarker();
@@ -739,9 +741,15 @@ let VKGeo = (function() {
                                 }
                             });
                         } else {
+                            let current_time = (new Date()).getTime() / 1000;
+
                             my_marker.setGeometry(new ol.geom.Point(ol.proj.fromLonLat([position.coords.longitude, position.coords.latitude])));
 
-                            my_marker.set("updateTime", (new Date()).getTime() / 1000);
+                            my_marker.setStyle(new ol.style.Style({
+                                "image": createMarkerImage(my_marker, current_time, my_photo_100)
+                            }));
+
+                            my_marker.set("updateTime", current_time);
 
                             if (tracked_marker !== null) {
                                 centerOnTrackedMarker();
