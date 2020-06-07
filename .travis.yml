@@ -23,5 +23,6 @@ script:
         sonar-scanner -Dsonar.projectKey=vkgeo_vkgeo-web \
                       -Dsonar.projectName="VKGeo Web" \
                       -Dsonar.sources=. \
-                      -Dsonar.sourceEncoding=UTF-8; \
+                      -Dsonar.sourceEncoding=UTF-8 \
+                      -Dsonar.exclusions=vk_iframe_app/lib/**/*; \
     fi
