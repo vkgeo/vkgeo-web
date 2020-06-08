@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-01 04:10+0300\n"
+"POT-Creation-Date: 2020-06-08 22:38+0300\n"
 "PO-Revision-Date: 2020-03-20 02:51+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -27,12 +27,12 @@ msgstr ""
 "&#169; Участники проекта <a href=\"https://www.openstreetmap.org/copyright\" "
 "target=\"_blank\" rel=\"noopener\">OpenStreetMap</a>."
 
-#: ../vk_iframe_app/index.html:66
+#: ../vk_iframe_app/index.html:65
 msgid "Please update your browser to start using this app."
 msgstr ""
 "Пожалуйста, обновите ваш браузер, чтобы начать использовать это приложение."
 
-#: ../vk_iframe_app/js/vkgeo.js:760
+#: ../vk_iframe_app/js/vkgeo.js:768
 msgid "Settings"
 msgstr "Настройки"
 
@@ -48,11 +48,11 @@ msgstr ""
 "\">Установите VKGeo на ваш мобильный</a> и пригласите друзей, чтобы вы с "
 "ними могли видеть друг друга на карте."
 
-#: ../vk_iframe_app/js/vkgeo.js:795 ../vk_iframe_app/js/vkgeo.js:798
+#: ../vk_iframe_app/js/vkgeo.js:803 ../vk_iframe_app/js/vkgeo.js:806
 msgid "VK initialization failed."
 msgstr "Не удалось выполнить инициализацию ВК."
 
-#: ../vk_iframe_app/js/vkgeo.js:759
+#: ../vk_iframe_app/js/vkgeo.js:767
 msgid ""
 "You should allow access to friends and notes to view location of your "
 "friends on the map."

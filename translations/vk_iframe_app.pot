@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-01 04:10+0300\n"
+"POT-Creation-Date: 2020-06-08 22:43+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,11 +23,11 @@ msgid ""
 "rel=\"noopener\">OpenStreetMap</a> contributors."
 msgstr ""
 
-#: ../vk_iframe_app/index.html:66
+#: ../vk_iframe_app/index.html:65
 msgid "Please update your browser to start using this app."
 msgstr ""
 
-#: ../vk_iframe_app/js/vkgeo.js:760
+#: ../vk_iframe_app/js/vkgeo.js:768
 msgid "Settings"
 msgstr ""
 
@@ -39,11 +39,11 @@ msgid ""
 "can see each other on the map."
 msgstr ""
 
-#: ../vk_iframe_app/js/vkgeo.js:795 ../vk_iframe_app/js/vkgeo.js:798
+#: ../vk_iframe_app/js/vkgeo.js:803 ../vk_iframe_app/js/vkgeo.js:806
 msgid "VK initialization failed."
 msgstr ""
 
-#: ../vk_iframe_app/js/vkgeo.js:759
+#: ../vk_iframe_app/js/vkgeo.js:767
 msgid ""
 "You should allow access to friends and notes to view location of your "
 "friends on the map."
