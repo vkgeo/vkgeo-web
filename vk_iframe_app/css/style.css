@@ -37,24 +37,13 @@ body {
     color:      white;
     font-size:  10pt;
 }
-#adPanel {
-    position:  absolute;
-    width:     auto;
-    height:    auto;
-    bottom:    0;
-    left:      50%;
-    z-index:   1;
-    display:   none;
-    overflow:  auto;
-    transform: translateX(-50%);
-}
 #controlPanel {
     position:         absolute;
     width:            84px;
     top:              10%;
     bottom:           10%;
     right:            0;
-    z-index:          2;
+    z-index:          1;
     display:          none;
     align-items:      center;
     justify-content:  flex-start;
@@ -73,7 +62,7 @@ body {
     top:              0;
     left:             15%;
     right:            15%;
-    z-index:          3;
+    z-index:          2;
     display:          none;
     align-items:      center;
     justify-content:  center;
@@ -94,7 +83,7 @@ body {
     bottom:           35%;
     left:             20%;
     right:            20%;
-    z-index:          4;
+    z-index:          3;
     display:          none;
     align-items:      center;
     justify-content:  center;
@@ -132,7 +121,7 @@ body {
     bottom:           35%;
     left:             20%;
     right:            20%;
-    z-index:          5;
+    z-index:          4;
     display:          none;
     align-items:      center;
     justify-content:  center;

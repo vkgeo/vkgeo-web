@@ -256,7 +256,7 @@ let VKGeo = (function() {
             map.getView().fit(extent, {
                 "padding": [MAP_PADDING,
                             MAP_PADDING + getElementSize(document.getElementById("controlPanel")).width,
-                            MAP_PADDING + getElementSize(document.getElementById("adPanel")).height,
+                            MAP_PADDING,
                             MAP_PADDING],
                 "maxZoom": MAP_CENTER_ZOOM
             });
@@ -653,18 +653,7 @@ let VKGeo = (function() {
     try {
         VK.init(function() {
             function init() {
-                document.getElementById("adPanel").style.display      = "flex";
                 document.getElementById("controlPanel").style.display = "flex";
-
-                VK.Widgets.Ads("adPanel", {}, {
-                    "ad_unit_id":     105075,
-                    "ad_unit_hash":   "498223b8d2f6d0f460567d0b69f52cfc",
-                    "ad_unit_width":  260,
-                    "ad_unit_height": 125,
-                    "ad_unit_type":   "horizontal",
-                    "ad_type":        "horizontal",
-                    "ads_count":      1
-                });
 
                 runVKRequestQueue();
                 runPeriodicUpdate();
