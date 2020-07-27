@@ -13,7 +13,7 @@ let VKGeo = (function() {
     const VK_REQUEST_INTERVAL      = 500;
     const VK_MAX_BATCH_SIZE        = 25;
     const VK_MAX_NOTES_GET_COUNT   = 100;
-    const VK_API_V                 = "5.103";
+    const VK_API_V                 = "5.120";
     const DATA_NOTE_TITLE          = "VKGeo Data";
     const DEFAULT_PHOTO_100_URL    = "images/camera_100.png";
 
