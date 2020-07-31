@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=/bin:/usr/bin; export PATH
+export PATH=/bin:/usr/bin
 
 xgettext --keyword=_ --language=JavaScript --add-comments --sort-output -o ../translations/vk_iframe_app.pot ../vk_iframe_app/index.html ../vk_iframe_app/js/vkgeo.js
 
