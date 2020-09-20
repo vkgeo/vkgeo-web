@@ -501,7 +501,7 @@ let VKGeo = (function() {
 
                                 let frnd_marker = marker_source.getFeatureById(user_id);
 
-                                if (frnd_marker === null) {
+                                if (!frnd_marker) {
                                     frnd_marker = new ol.Feature({
                                         "geometry": new ol.geom.Point(ol.proj.fromLonLat([friends_map[user_id].longitude, friends_map[user_id].latitude]))
                                     });
@@ -660,7 +660,7 @@ let VKGeo = (function() {
 
                 if (navigator.geolocation) {
                     navigator.geolocation.watchPosition(function(position) {
-                        if (my_marker === null) {
+                        if (!my_marker) {
                             new Promise(function(resolve) {
                                 enqueueVKApiRequest("users.get", {
                                     "fields": "photo_100",
@@ -669,7 +669,7 @@ let VKGeo = (function() {
                                     resolve(data);
                                 });
                             }).then(function(data) {
-                                if (my_marker === null) {
+                                if (!my_marker) {
                                     if (data.response) {
                                         if (Array.isArray(data.response) && data.response.length === 1) {
                                             let current_time = (new Date()).getTime() / 1000;
