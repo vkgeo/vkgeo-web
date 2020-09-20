@@ -41,8 +41,8 @@ let VKGeo = (function() {
 
     function createControlPanelImage(img_class, user_id, battery_status, battery_level, src) {
         function drawIcon() {
-            if ((image          &&  image.complete && image.naturalWidth > 0 && image.naturalHeight > 0) &&
-                (label === null || (label.complete && label.naturalWidth > 0 && label.naturalHeight > 0))) {
+            if (                   (image && image.complete && image.naturalWidth > 0 && image.naturalHeight > 0) &&
+                (label === null || (label && label.complete && label.naturalWidth > 0 && label.naturalHeight > 0))) {
                 const angle   = Math.PI / 4;
                 let   radius  = Math.min(IMAGE_SIZE.width, IMAGE_SIZE.height) / 2;
                 let   context = canvas.getContext("2d");
@@ -155,8 +155,8 @@ let VKGeo = (function() {
         return new ol.style.Icon({
             "img": (function() {
                 function drawIcon() {
-                    if ((image          &&  image.complete && image.naturalWidth > 0 && image.naturalHeight > 0) &&
-                        (label === null || (label.complete && label.naturalWidth > 0 && label.naturalHeight > 0))) {
+                    if (                   (image && image.complete && image.naturalWidth > 0 && image.naturalHeight > 0) &&
+                        (label === null || (label && label.complete && label.naturalWidth > 0 && label.naturalHeight > 0))) {
                         const angle   = Math.PI / 4;
                         let   radius  = Math.min(IMAGE_SIZE.width, IMAGE_SIZE.height) / 2;
                         let   context = canvas.getContext("2d");
