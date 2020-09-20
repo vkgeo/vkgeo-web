@@ -335,7 +335,7 @@ let VKGeo = (function() {
                 }
             }
 
-            if (tracked_marker !== null) {
+            if (tracked_marker) {
                 centerOnTrackedMarker();
             } else if (!map_was_touched) {
                 fitMapToAllMarkers();
@@ -705,7 +705,7 @@ let VKGeo = (function() {
 
                                             my_marker.set("updateTime", current_time);
 
-                                            if (tracked_marker !== null) {
+                                            if (tracked_marker) {
                                                 centerOnTrackedMarker();
                                             } else if (!map_was_touched) {
                                                 fitMapToAllMarkers();
@@ -740,7 +740,7 @@ let VKGeo = (function() {
 
                             my_marker.set("updateTime", current_time);
 
-                            if (tracked_marker !== null) {
+                            if (tracked_marker) {
                                 centerOnTrackedMarker();
                             } else if (!map_was_touched) {
                                 fitMapToAllMarkers();
