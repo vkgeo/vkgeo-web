@@ -360,12 +360,12 @@ let VKGeo = (function() {
                             return fetchFriends(offset + data.response.items.length);
                         }
                     } else {
-                        throw new Error("invalid response to friends.get request : " + JSON.stringify(data.response));
+                        throw new Error("invalid response to friends.get request: " + JSON.stringify(data.response));
                     }
                 } else if (data.error) {
-                    throw new Error("friends.get request failed : " + data.error.error_msg);
+                    throw new Error("friends.get request failed: " + data.error.error_msg);
                 } else {
-                    throw new Error("friends.get request failed : " + JSON.stringify(data));
+                    throw new Error("friends.get request failed: " + JSON.stringify(data));
                 }
             });
         }
@@ -409,7 +409,7 @@ let VKGeo = (function() {
                         }
                     }
                 } else {
-                    console.warn("runPeriodicUpdate() : invalid friend entry : %o", item);
+                    console.warn("runPeriodicUpdate() : invalid friend entry: %o", item);
                 }
             }
 
@@ -459,16 +459,16 @@ let VKGeo = (function() {
                                     }
                                 }
                             } else {
-                                console.warn("runPeriodicUpdate() : invalid response to notes.get request : %o", user_notes_list);
+                                console.warn("runPeriodicUpdate() : invalid response to notes.get request: %o", user_notes_list);
                             }
                         }
                     } else {
-                        console.warn("runPeriodicUpdate() : invalid response to execute(notes.get) request : %o", data.response);
+                        console.warn("runPeriodicUpdate() : invalid response to execute(notes.get) request: %o", data.response);
                     }
                 } else if (data.error) {
-                    throw new Error("execute(notes.get) request failed : " + data.error.error_msg);
+                    throw new Error("execute(notes.get) request failed: " + data.error.error_msg);
                 } else {
-                    throw new Error("execute(notes.get) request failed : " + JSON.stringify(data));
+                    throw new Error("execute(notes.get) request failed: " + JSON.stringify(data));
                 }
             }
 
@@ -489,7 +489,7 @@ let VKGeo = (function() {
                             try {
                                 user_data = JSON.parse(atob(regexp_result[1]));
                             } catch (ex) {
-                                console.warn("runPeriodicUpdate() : invalid user data : %s", item.text);
+                                console.warn("runPeriodicUpdate() : invalid user data: %s", item.text);
                             }
 
                             if (user_data && typeof user_data.update_time === "number" && isFinite(user_data.update_time) &&
@@ -530,11 +530,11 @@ let VKGeo = (function() {
                                 updated_friends[user_id] = true;
                             }
                         } else {
-                            console.warn("runPeriodicUpdate() : invalid user data : %s", item.text);
+                            console.warn("runPeriodicUpdate() : invalid user data: %s", item.text);
                         }
                     }
                 } else {
-                    console.warn("runPeriodicUpdate() : invalid note entry : %o", item);
+                    console.warn("runPeriodicUpdate() : invalid note entry: %o", item);
                 }
             }
 
@@ -720,12 +720,12 @@ let VKGeo = (function() {
                                                 control_panel.appendChild(my_image);
                                             }
                                         } else {
-                                            throw new Error("invalid response to users.get request : " + JSON.stringify(data.response));
+                                            throw new Error("invalid response to users.get request: " + JSON.stringify(data.response));
                                         }
                                     } else if (data.error) {
-                                        throw new Error("users.get request failed : " + data.error.error_msg);
+                                        throw new Error("users.get request failed: " + data.error.error_msg);
                                     } else {
-                                        throw new Error("users.get request failed : " + JSON.stringify(data));
+                                        throw new Error("users.get request failed: " + JSON.stringify(data));
                                     }
                                 }
                             });
