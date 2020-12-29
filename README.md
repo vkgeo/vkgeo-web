@@ -16,8 +16,6 @@
 
 ---
 
-[![Travis Build Status](https://travis-ci.com/vkgeo/vkgeo-web.svg?branch=master)](https://travis-ci.com/vkgeo/vkgeo-web)
-[![Coverity Scan Status](https://scan.coverity.com/projects/20966/badge.svg)](https://scan.coverity.com/projects/vkgeo-vkgeo-web)
 [![SonarCloud Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=vkgeo_vkgeo-web&metric=alert_status)](https://sonarcloud.io/dashboard?id=vkgeo_vkgeo-web)
 
 [![SonarCloud Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=vkgeo_vkgeo-web&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=vkgeo_vkgeo-web)
