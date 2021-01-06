@@ -1,0 +1,4 @@
+name: "CodeQL Config"
+
+paths-ignore:
+- "vk_iframe_app/lib/ol-*"
