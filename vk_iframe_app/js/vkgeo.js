@@ -622,22 +622,24 @@ let VKGeo = (function() {
     });
 
     map.on("pointermove", function(event) {
-        marker_layer.getFeatures(event.pixel).then(function(features) {
-            if (features && features.length > 0) {
-                let feature = features[0];
+        if (!event.dragging) {
+            marker_layer.getFeatures(event.pixel).then(function(features) {
+                if (features && features.length > 0) {
+                    let feature = features[0];
 
-                map.getOverlayById("markerTooltip").setPosition(event.coordinate);
+                    map.getOverlayById("markerTooltip").setPosition(event.coordinate);
 
-                document.getElementById("markerTooltipNameText").innerHTML       = escapeHtml(_("{0} {1}", feature.get("firstName"),
-                                                                                                           feature.get("lastName")));
-                document.getElementById("markerTooltipUpdateTimeText").innerHTML = escapeHtml(_("{0}",     (new Date(feature.get("updateTime") * 1000))
-                                                                                                                .toLocaleString()));
+                    document.getElementById("markerTooltipNameText").innerHTML       = escapeHtml(_("{0} {1}", feature.get("firstName"),
+                                                                                                               feature.get("lastName")));
+                    document.getElementById("markerTooltipUpdateTimeText").innerHTML = escapeHtml(_("{0}",     (new Date(feature.get("updateTime") * 1000))
+                                                                                                                    .toLocaleString()));
 
-                document.getElementById("markerTooltip").style.display = "flex";
-            } else {
-                document.getElementById("markerTooltip").style.display = "none";
-            }
-        });
+                    document.getElementById("markerTooltip").style.display = "flex";
+                } else {
+                    document.getElementById("markerTooltip").style.display = "none";
+                }
+            });
+        }
     });
 
     map.on("dblclick", function(event) {
