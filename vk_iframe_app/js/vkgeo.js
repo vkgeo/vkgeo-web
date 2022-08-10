@@ -748,6 +748,8 @@ let VKGeo = (function() {
                                 fitMapToAllMarkers();
                             }
                         }
+                    }, function(error) {
+                        console.warn("watchPosition() : returned error: %o", error);
                     });
                 }
 
