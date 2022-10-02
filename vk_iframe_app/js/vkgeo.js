@@ -602,7 +602,7 @@ let VKGeo = (function() {
             "center": ol.proj.fromLonLat([0.0, 0.0]),
             "zoom":   0
         }),
-        "controls": ol.control.defaults({
+        "controls": ol.control.defaults.defaults({
             "attributionOptions": {
                 "collapsible": true
             }
