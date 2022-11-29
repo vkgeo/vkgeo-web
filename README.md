@@ -16,7 +16,7 @@
 
 ---
 
-[![CodeQL Analysis Status](https://github.com/vkgeo/vkgeo-web/workflows/CodeQL%20Analysis/badge.svg)](https://github.com/vkgeo/vkgeo-web/actions?query=workflow%3A%22CodeQL%20Analysis%22)
+[![CodeQL Analysis Status](https://github.com/vkgeo/vkgeo-web/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/vkgeo/vkgeo-web/actions/workflows/codeql-analysis.yml?query=branch%3Amaster)
 [![SonarCloud Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=vkgeo_vkgeo-web&metric=alert_status)](https://sonarcloud.io/dashboard?id=vkgeo_vkgeo-web)
 
 [![SonarCloud Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=vkgeo_vkgeo-web&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=vkgeo_vkgeo-web)
